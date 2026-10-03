@@ -74,3 +74,26 @@ bun for install/scripts (matches L7), Biome for lint/format (no ESLint/Prettier)
 
 Ten vertical-slice changes planned up front under `openspec/changes/`, mirroring the backend's flows,
 so implementation never starts "randomly". Each slice is applied, verified in the browser, reviewed, then archived.
+
+## D10 — Planned: `@xyflow/react` for the read-only workflow view (not installed yet)
+
+**Problem:** PRD §11/§26 asks for a visible, read-only workflow (post → platforms → result) on the
+execution screens; no copied block draws node graphs.
+**Decision:** Add `@xyflow/react` (React Flow) when `publish-and-executions-ui` is applied — read-only,
+no editing, nodes styled with the dark tokens. **Why:** It is the library the PRD names, it is the standard
+for node graphs in React, and drawing a graph by hand would be a primitive built from scratch (CLAUDE.md rule 1).
+
+## D11 — Planning documents derived from the implemented backend
+
+`docs/api-contract.md` (every endpoint, verified from backend source), `docs/ui-spec.md` (every screen),
+`docs/frontend-architecture.md` (data layer, cache, session, polling, uploads, security) and
+`docs/spec-traceability.md` (each backend requirement / PRD section → frontend change). **Why:** the backend is
+already built and working, so the frontend plan is checked against what exists, not against assumptions.
+
+## D12 — Canonical names where the planning documents disagree
+
+The plan was written by several passes and some names drifted. Canonical choices (the repo wins):
+- Route groups: `(public)/(marketing)`, `(public)/(authentication)`, `(dashboard)` — not `(app)` / `(auth)`.
+- `/dashboard` hosts both the overview widgets and the posts feed; there is no `/posts` index. `/posts/[id]` is the only post route.
+- Before applying a slice, reconcile its tasks with `docs/frontend-architecture.md` (query keys, file names) and `docs/ui-spec.md` (screen IDs).
+- Copied blocks use light-theme colours in places; the nine in-place fixes (RT-1…RT-9) in `docs/ui-spec.md` §5.4 are folded into the first slice that touches them.

@@ -11,6 +11,14 @@ TanStack Query · ofetch · react-hook-form + zod · framer-motion · Biome · b
   Live API: see `.env.example` (`NEXT_PUBLIC_API_BASE_URL`).
 - `openspec/changes/*` — the planned vertical slices (build in the order listed below).
 - `src/design-system/vercel-design-system.md` — design source; `src/app/globals.css` — the dark tokens.
+- `docs/api-contract.md` — every endpoint, verified from backend source (request, response, errors, quirks).
+- `docs/ui-spec.md` — every screen: layout, components, API calls, states, copy.
+- `docs/frontend-architecture.md` — apiClient, cache/invalidation, session, polling, uploads, security.
+- `docs/spec-traceability.md` — each backend requirement / PRD section → frontend change.
+- `docs/api-contract.md` — every endpoint, verified from backend source (request, response, errors, quirks).
+- `docs/ui-spec.md` — every screen: layout, components, API calls, states, copy.
+- `docs/frontend-architecture.md` — apiClient, cache/invalidation, session, polling, uploads, security.
+- `docs/spec-traceability.md` — each backend requirement / PRD section → frontend change.
 - `docs/decisions.md` — why every dependency / non-trivial choice exists.
 
 ## Build order (OpenSpec changes — one slice at a time, never the whole app)
