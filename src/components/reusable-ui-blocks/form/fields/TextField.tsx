@@ -18,34 +18,14 @@ import {
 import type { TBaseFieldProps } from "../types/form.type";
 import { FieldLabel } from "./FieldLabel";
 
-/*=========================================================
-// TextField — single-line input.
-//
-// The pill/54px look below IS this project's base input
-// design (Metro InHouse design tokens — see design-system), not a
-// generic shadcn default: every TextField ships this look
-// out of the box, so callers pass only `name`/`label`/`type`
-// and never repeat these classes. Porting this module to a
-// different brand means editing the *_CLASS literals here —
-// same one-file-touch as `primitives/host.ts` for wiring.
-//
-// The label/required/message/action *ClassName props still
-// exist purely as an escape hatch for the rare page that needs
-// to diverge from the base (README.md §8) — passing them
-// overrides, never required for the common case.
-//
-// @example
-// <TextField name="email" label="Email" type="email" required />
-=========================================================*/
-
 const BASE_INPUT_CLASS =
-  "h-14 w-full rounded-[60px] border-[#F0F0F0] px-5 py-4 font-proxima-nova text-base placeholder:text-[#8F8F8F] focus-visible:ring-primary/50";
+  "h-10 w-full rounded-sm border-input bg-transparent px-3 text-base md:text-sm placeholder:text-muted-foreground focus-visible:ring-ring/50";
 const BASE_LABEL_CLASS =
-  "items-start gap-0.5 font-proxima-nova text-base font-normal leading-6 text-dark";
-const BASE_REQUIRED_CLASS = "ml-0 text-primary";
-const BASE_MESSAGE_CLASS = "pl-2";
+  "items-start gap-0.5 text-sm font-medium leading-6 text-foreground";
+const BASE_REQUIRED_CLASS = "ml-0 text-destructive";
+const BASE_MESSAGE_CLASS = "";
 const BASE_ACTION_CLASS =
-  "absolute! right-5! top-1/2! h-auto! w-auto! -translate-y-1/2! rounded-none! bg-transparent! p-0! text-primary! hover:bg-transparent! cursor-pointer";
+  "absolute right-0 top-1/2 size-10 -translate-y-1/2 rounded-sm text-muted-foreground hover:text-foreground";
 
 type TTextFieldProps<T extends FieldValues> = TBaseFieldProps<T> & {
   type?: "text" | "email" | "password" | "number" | "tel" | "url" | "search";
@@ -54,6 +34,8 @@ type TTextFieldProps<T extends FieldValues> = TBaseFieldProps<T> & {
   autoComplete?: string;
   /** Trailing icon button — a clear/search/generate affordance, or a password-visibility toggle. */
   action?: () => void;
+  actionLabel?: string;
+  actionPressed?: boolean;
   icon?: ReactNode;
   /** Spinner inside the input, e.g. while an availability check runs. */
   loading?: boolean;
@@ -77,6 +59,8 @@ export function TextField<T extends FieldValues>(props: TTextFieldProps<T>) {
     autoComplete,
     description,
     action,
+    actionLabel,
+    actionPressed,
     icon = <XIcon className="size-4 text-muted-foreground" />,
     loading = false,
     className,
@@ -150,6 +134,8 @@ export function TextField<T extends FieldValues>(props: TTextFieldProps<T>) {
                 size="icon-sm"
                 onClick={action}
                 disabled={disabled}
+                aria-label={actionLabel}
+                aria-pressed={actionPressed}
                 className={cn(BASE_ACTION_CLASS, actionClassName)}
               >
                 {icon}
