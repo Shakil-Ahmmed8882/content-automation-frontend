@@ -87,7 +87,7 @@ export function useAuthRedirect(
   useEffect(() => {
     if (session.isPending || session.isError) return;
     if (session.data) hadSession.current = true;
-    if (mode === "guest" && session.data)     router.replace(returnTo);
+    if (mode === "guest" && session.data) router.replace(returnTo);
     if (mode === "protected" && session.data === null && !hadSession.current)
       router.replace(loginUrl(returnTo));
   }, [

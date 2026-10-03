@@ -22,7 +22,21 @@ bun run dev                  # http://localhost:3000
 | `bun run dev` | Start the dev server |
 | `bun run build` | Production build |
 | `bun run lint` | Biome check |
+| `bun run test` | Authentication validation, safe redirects, API errors and refresh regression tests |
 | `npx tsc --noEmit` | Type check |
+
+## Authentication
+
+Login, two-step registration/email verification, forgot password, reset password, logout,
+and cookie-based session refresh are implemented. No tokens or verification codes are stored
+in browser storage. Auth pages use the shared form blocks and the dark design tokens.
+
+For an optional prefilled demo login, configure `NEXT_PUBLIC_DEMO_LOGIN_ENABLED=true`,
+`NEXT_PUBLIC_DEMO_EMAIL`, and `NEXT_PUBLIC_DEMO_PASSWORD` in your ignored `.env.local`.
+Provision that account on the configured backend first. These credentials are intentionally
+public: use only a dedicated **non-admin demo account**, never personal or private credentials.
+Demo mode is disabled in the example configuration. Visitors can edit the fields, and login
+still requires pressing **Log in** and passing the real API authentication.
 
 ## Project layout
 
@@ -48,3 +62,8 @@ foundation → app shell → auth → profile → connections → post composer 
 executions → premium payment → upcoming features → admin console.
 
 Run `openspec list` to see them, and read `CLAUDE.md` for the conventions.
+
+Authentication was implemented first at the user's request. The dashboard now has a responsive
+shell, session-derived membership/navigation, and API-backed connections/recent-execution widgets
+with independent loading, empty and error states. Downstream feature pages are explicitly marked
+as pending until their own OpenSpec slices are implemented and verified.

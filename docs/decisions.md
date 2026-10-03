@@ -97,3 +97,93 @@ The plan was written by several passes and some names drifted. Canonical choices
 - `/dashboard` hosts both the overview widgets and the posts feed; there is no `/posts` index. `/posts/[id]` is the only post route.
 - Before applying a slice, reconcile its tasks with `docs/frontend-architecture.md` (query keys, file names) and `docs/ui-spec.md` (screen IDs).
 - Copied blocks use light-theme colours in places; the nine in-place fixes (RT-1…RT-9) in `docs/ui-spec.md` §5.4 are folded into the first slice that touches them.
+
+## D13 — Authentication first, using the canonical module names
+
+Implementation starts with `auth-ui` at the user's request. The canonical paths remain
+`api/auth.api.ts`, `hooks/auth.hook.ts`, `validation/auth.validation.ts`, and
+`(public)/(authentication)`, rather than the older artifact's abbreviated paths.
+Session state belongs exclusively to TanStack Query's `["session"]`. Login and verification
+seed it; logout cancels outstanding queries and clears all private cache entries.
+Credentials and OTPs are never persisted, and dev-only response OTPs are discarded in the API layer.
+
+## D14 — Refresh is a single-flight request wrapper, not a response hook
+
+An explicit ofetch wrapper can return the retried response, unlike an error notification hook.
+It disables ofetch retries, shares concurrent refresh attempts, and retries each protected request
+at most once. Business auth endpoints are excluded; `/auth/me` is not excluded, so reload can
+renew an expired access cookie. Refresh network/5xx failures surface as errors without signing
+the user out. Failed refresh authentication clears the private cache and preserves a safe `next`
+path, with a query-only session-expiry notice. The initial guest check does not show that notice.
+
+## D15 — Recovery confirmation, resend, and unavailable providers
+
+Forgot password displays the same neutral confirmation for every email, followed by an explicit
+"Enter code" link carrying the email into reset. Registration resend repeats `/auth/register`
+with component-memory credentials and a 30-second cooldown. There is no invented resend endpoint.
+HTTP 429 has a shared cooldown (readable Retry-After, otherwise 60 seconds), no automatic retry,
+and a countdown. Google sign-in remains deferred: the backend exposes no Google auth route.
+
+## D16 — Auth form port fixes and backend validation parity
+
+RT-2 and the auth-facing portion of RT-9 are applied when the forms first ship: semantic dark
+tokens, 40px inputs, 6px in-app radii, named password-toggle controls, and explicit button
+transition properties. Existing GenericForm/TextField/SubmitButton are reused; OTP is composed
+from their exported form primitives. Backend errors are inline alerts, with structured field
+errors mapped only to known fields; 5xx text and raw response bodies are never rendered.
+
+| Frontend schema / rule | Backend source |
+|---|---|
+| register: trimmed nonempty name, valid email, password minimum 8 | `../content-automation-backend/src/app/module/auth/auth.validation.ts`, `register` |
+| login: valid email, nonempty password (not minimum 8) | same file, `login` |
+| verify: valid email, exactly 6 numeric digits | same file, `verifyEmail` |
+| forgot: valid email | same file, `forgotPassword` |
+| reset: valid email, exactly 6 numeric digits, new password minimum 8 | same file, `resetPassword` |
+
+Local verification uses the existing development PostgreSQL/Redis with runtime-only backend
+connection overrides. SMTP is pointed at a closed local port for synthetic test users, so no
+external email or credentials are sent; the backend's existing development OTP exposure is
+consumed by the test runner only. Frontend `.env.local` selects the local API and is gitignored.
+
+## D17 — Opt-in, prefilled demo login
+
+At the user's request the local login form defaults to a dedicated, regular demo account.
+`lib/demo-login.ts` reads opt-in `NEXT_PUBLIC_DEMO_*` configuration; the example leaves it disabled
+and credentials empty. Local values are in gitignored `.env.local`, never in committed source.
+These are intentionally public demo credentials, not secrets: never configure an administrator,
+personal account, or production private account. The notice explains that users may replace the
+prefilled details. No automatic login occurs and all authentication still goes through the API.
+
+## D18 — Dashboard shell and real overview data
+
+The shell consumes the completed auth hooks, uses a 240px sidebar from 960px and a 64px topbar,
+and derives navigation/crowns only from the backend session. Shared connections/platforms and
+recent-executions read hooks are implemented now, rather than returning stub data until later
+slices. Their mutation/detail surfaces remain owned by those slices. Unimplemented destinations
+have explicit module-pending pages; they are not presented as completed API features.
+
+The existing drawer had neither focus trapping nor restoration. It now composes the installed
+Radix Dialog focus/dismissal infrastructure while retaining its existing sizing, page history,
+animations, and Escape behavior; its chrome is ported to dark tokens (RT-1). The action-menu
+registry command stalled resolving dependencies and was stopped. UserMenu therefore composes
+the already-installed Radix DropdownMenu directly, with semantic tokens and its built-in
+keyboard/roving-focus behavior. No new dependencies were added.
+
+Marketing actions are session-aware, with neutral pending and explicit retry states. Publishing
+examples are labeled illustrations and say manual retry, not automatic retry. Footer copy no
+longer claims operational health without a health query. Route error boundaries use this
+installed Next version's `retry` prop, rather than the older `reset` prop.
+
+Browser verification exposed two integration bugs: session-aware regions can hydrate after an
+earlier region has already populated the query cache, so their initial markup uses a shared
+server/client hydration snapshot. Also, removing the session query during logout stranded
+mounted home-page observers on their previous user. Logout/expiry now publish `null` to the
+existing session query and remove every other query plus mutation cache; a regression test
+asserts mounted observers receive the guest transition and private data disappears.
+
+The guest guard and successful login now use the same validated `next` destination, so a guard
+effect cannot overwrite a connection/profile return path with `/dashboard`. After a previously
+authenticated session becomes guest, the session provider owns expiry redirects; the protected
+guard only redirects initial guests. This avoids racing a deliberate logout's home navigation.
+Logout cancels in-flight private queries before clearing the backend cookies, as well as before
+removing private cache entries.
