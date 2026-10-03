@@ -1,11 +1,10 @@
 import { Check } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { MarketingAction } from "./MarketingAction";
 
 const perks = [
-  "Early access to upcoming features",
+  "Access to the upcoming-features roadmap",
   "Premium badge on your profile",
-  "Priority on the roadmap",
+  "A one-time membership upgrade",
 ] as const;
 
 export default function PremiumCta() {
@@ -18,8 +17,8 @@ export default function PremiumCta() {
             Get a look at what&apos;s next.
           </h2>
           <p className="mt-4 max-w-md text-muted-foreground">
-            Upgrade once and see the roadmap before everyone else — and help
-            decide what ships first.
+            Upgrade once to explore the upcoming-features roadmap and view the
+            details of what is being planned.
           </p>
         </div>
 
@@ -32,9 +31,7 @@ export default function PremiumCta() {
               </li>
             ))}
           </ul>
-          <Button asChild size="pill" className="mt-8 w-full">
-            <Link href="/register">Create your account</Link>
-          </Button>
+          <MarketingAction premium className="mt-8 w-full" />
         </div>
       </div>
     </section>

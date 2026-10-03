@@ -36,7 +36,7 @@ export default function Footer() {
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-[1400px] flex-col gap-2 px-4 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <p>© {new Date().getFullYear()} Content Automation</p>
-          <p className="font-mono">All systems operational</p>
+          <p>LinkedIn profiles and Facebook Pages</p>
         </div>
       </div>
     </footer>

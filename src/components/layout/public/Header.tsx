@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
 import { publicNav } from "@/routes";
+import { SessionNav } from "./SessionNav";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -28,12 +29,7 @@ export default function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          <Button asChild variant="outline" size="sm">
-            <Link href="/login">Log in</Link>
-          </Button>
-          <Button asChild size="sm">
-            <Link href="/register">Sign up</Link>
-          </Button>
+          <SessionNav />
         </div>
 
         <Button
@@ -63,12 +59,7 @@ export default function Header() {
             ))}
           </nav>
           <div className="flex gap-2">
-            <Button asChild variant="outline" className="flex-1">
-              <Link href="/login">Log in</Link>
-            </Button>
-            <Button asChild className="flex-1">
-              <Link href="/register">Sign up</Link>
-            </Button>
+            <SessionNav onNavigate={() => setOpen(false)} />
           </div>
         </div>
       )}

@@ -12,7 +12,12 @@ const steps = [
   {
     n: "03",
     title: "Publish",
-    body: "Hit publish. Watch each platform report back in real time.",
+    body: "Choose your platforms and publish. Each destination reports its own result.",
+  },
+  {
+    n: "04",
+    title: "Track",
+    body: "Review your execution history and manually retry failed destinations.",
   },
 ] as const;
 
@@ -22,7 +27,7 @@ const logLines = [
   {
     mark: "!",
     tone: "text-warning",
-    text: "facebook   failed — retrying (2/3)",
+    text: "facebook   failed — manual retry available",
   },
   { mark: "✓", tone: "text-success", text: "facebook   published in 0.9s" },
 ] as const;
@@ -36,10 +41,10 @@ export default function HowItWorks() {
       <div className="mx-auto max-w-[1400px] px-4 py-24 sm:px-6">
         <p className="eyebrow">How it works</p>
         <h2 className="mt-3 max-w-2xl text-3xl tracking-[-0.04em] sm:text-display-lg">
-          Three steps. No tab-hopping.
+          Four steps. No tab-hopping.
         </h2>
 
-        <ol className="mt-14 grid gap-4 md:grid-cols-3">
+        <ol className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((s) => (
             <li key={s.n} className="rounded-lg bg-background p-8 shadow-float">
               <span className="font-mono text-xs text-muted-foreground">
@@ -54,7 +59,7 @@ export default function HowItWorks() {
         </ol>
 
         <div className="mt-6 overflow-hidden rounded-md bg-background p-6 shadow-card">
-          <p className="eyebrow mb-4">publish.log</p>
+          <p className="eyebrow mb-4">Example publish.log</p>
           <div className="space-y-1 overflow-x-auto font-mono text-[13px] leading-5 text-muted-foreground">
             {logLines.map((line) => (
               <p key={line.text} className="whitespace-pre">
