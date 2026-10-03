@@ -1,0 +1,37 @@
+schema: spec-driven
+
+context: |
+  Product: Content Automation Platform — frontend. Write a post once, publish it to LinkedIn and
+  Facebook Page. Premium users unlock upcoming features. Admins manage platforms/users/features.
+  Single source of truth for behaviour: the backend repo at ../content-automation-backend
+  (docs/PRD.md = what, docs/data-model.md = schema, src/app/module/*/*.route.ts = real endpoints,
+  docs/postman = request examples). Never invent an endpoint or field; verify against the backend.
+  Tech stack: Next.js 16 (App Router, React 19, React Compiler), TypeScript, Tailwind v4,
+  shadcn/ui (radix), TanStack Query, ofetch, react-hook-form + zod, framer-motion, Biome, bun.
+  Structure mirrors the L7 PH-Healthcare Next.js foundation: src/api (ofetch calls) -> src/hooks
+  (TanStack Query hooks) -> components; src/routes, src/types, src/validation, src/providers, src/lib.
+  Reusable UI blocks live in src/components/reusable-ui-blocks (copied from a sibling project);
+  reuse them (BaseButton, BaseImage, BaseAvatar, GenericForm fields, TimePicker, CalendarModal,
+  MultipageModal, InfiniteScroll, Pagination, skeletons) instead of rebuilding.
+  Design: src/design-system/vercel-design-system.md, applied as a FULL DARK theme (polarity-flipped).
+  Auth: backend sets httpOnly cookies; the client never stores tokens (credentials: "include").
+  Routes: marketing (/) is public; /login /register /forgot-password /reset-password are public;
+  /dashboard, /create, /connections, /executions, /profile, /payment, /upcoming-features and
+  /admin/* require a session. A signed-in user may still open the marketing home page.
+  Git: Conventional Commits, NO AI attribution anywhere (see .claude/skills/cmd-git-organize).
+
+rules:
+  proposal:
+    - State which backend endpoints/modules the change consumes, with file references.
+    - Include a Non-goals section.
+  specs:
+    - Requirements must be observable UI behaviour (what the user sees/can do), including loading, empty and error states.
+  tasks:
+    - One vertical slice per task group (api -> hook -> UI -> verify). Every task ends with a verification step.
+    - Prefer reusable-ui-blocks over new components; do not build UI primitives from scratch.
+
+operations:
+  apply:
+    guidance:
+      - Verify each slice in the browser (Playwriter) against the live or local backend before ticking it.
+      - Log every new dependency and non-trivial decision in docs/decisions.md as you make it.
