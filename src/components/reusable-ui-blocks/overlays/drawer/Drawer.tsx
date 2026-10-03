@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, X } from "lucide-react";
+import { Dialog } from "radix-ui";
 import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useEscapeHandler } from "@/components/reusable-ui-blocks/utils/events/useEscapeHelper";
@@ -75,12 +76,13 @@ type RootProps = {
   scroll?: boolean;
   /** Extra classes for the panel. */
   className?: string;
+  ariaLabel?: string;
   children: ReactNode;
 };
 
 const OVERLAY_PRESETS: Record<string, string> = {
-  dim: "bg-black/40",
-  blur: "bg-black/40 backdrop-blur-sm",
+  dim: "bg-background/70",
+  blur: "bg-background/70 backdrop-blur-sm",
 };
 
 const SIDE_ANCHOR: Record<DrawerSide, string> = {
@@ -103,6 +105,7 @@ function Root(props: RootProps) {
     duration = DRAWER_DEFAULT_DURATION,
     scroll = true,
     className,
+    ariaLabel = "Drawer",
     children,
   } = props;
 
@@ -118,6 +121,7 @@ function Root(props: RootProps) {
 
   // Panel layer ref so we can release will-change after the enter settles.
   const panelRef = useRef<HTMLDivElement>(null);
+  const previousFocus = useRef<HTMLElement | null>(null);
 
   // Lock the page scroll WITHOUT hiding the scrollbar (position:fixed +
   // overflow-y:scroll) so the parent layout never shifts when the drawer opens.
@@ -151,104 +155,130 @@ function Root(props: RootProps) {
   const overlayVariants = getOverlayVariants(resolvedDuration);
 
   return (
-    <DrawerProvider value={drawer}>
-      {/* Non-Page children (e.g. inline triggers) render in place so they can
+    <Dialog.Root
+      open={isOpen}
+      onOpenChange={(next) => {
+        if (!next) close();
+      }}
+    >
+      <DrawerProvider value={drawer}>
+        {/* Non-Page children (e.g. inline triggers) render in place so they can
 			    call the controls via useDrawerSelector. Only the panel is portalled. */}
-      {children}
+        {children}
 
-      {typeof document !== "undefined"
-        ? createPortal(
-            <AnimatePresence>
-              {isOpen && activePage && (
-                <motion.div
-                  key="drawer-root"
-                  initial={{ opacity: 1 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 1 }}
-                  className="fixed inset-0 z-999999"
-                >
-                  {/* Responsive size rules for this drawer instance */}
-                  <style>{sizeCss}</style>
-
-                  {/* Backdrop */}
+        {typeof document !== "undefined"
+          ? createPortal(
+              <AnimatePresence>
+                {isOpen && activePage && (
                   <motion.div
-                    variants={overlayVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    onClick={closeOnOverlayClick ? close : undefined}
-                    className={cn(
-                      "absolute inset-0",
-                      OVERLAY_PRESETS[overlay] ?? overlay,
-                    )}
-                    aria-hidden="true"
-                  />
-
-                  {/* Panel — slides in from `side`, fading in as it arrives.
-									    Pre-promoted to its own GPU layer (translateZ + will-change)
-									    so the layer exists from frame 1 and never jitters. */}
-                  <motion.div
-                    ref={panelRef}
-                    variants={panelVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    onAnimationComplete={(def) => {
-                      if (def === "visible" && panelRef.current) {
-                        panelRef.current.style.willChange = "auto";
-                      }
-                    }}
-                    style={{
-                      willChange: "transform, opacity",
-                      transform: "translateZ(0)",
-                      backfaceVisibility: "hidden",
-                      WebkitBackfaceVisibility: "hidden",
-                    }}
-                    className={cn(
-                      "absolute flex flex-col bg-white shadow-2xl outline-none",
-                      SIDE_ANCHOR[side],
-                      sizeClassName,
-                      className,
-                    )}
-                    role="dialog"
-                    aria-modal="true"
+                    key="drawer-root"
+                    initial={{ opacity: 1 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 1 }}
+                    className="fixed inset-0 z-999999"
                   >
-                    <PanelChrome
-                      activePage={activePage}
-                      canGoBack={canGoBack}
-                      goBack={goBack}
-                      close={close}
+                    {/* Responsive size rules for this drawer instance */}
+                    <style>{sizeCss}</style>
+
+                    {/* Backdrop */}
+                    <motion.div
+                      variants={overlayVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      onClick={closeOnOverlayClick ? close : undefined}
+                      className={cn(
+                        "absolute inset-0",
+                        OVERLAY_PRESETS[overlay] ?? overlay,
+                      )}
+                      aria-hidden="true"
                     />
 
-                    {/* Scroll owner: the drawer's scrollbar lives here, at the panel's
+                    {/* Panel — slides in from `side`, fading in as it arrives.
+									    Pre-promoted to its own GPU layer (translateZ + will-change)
+									    so the layer exists from frame 1 and never jitters. */}
+                    <Dialog.Content
+                      asChild
+                      forceMount
+                      aria-label={ariaLabel}
+                      aria-describedby={undefined}
+                      onInteractOutside={(event) => event.preventDefault()}
+                      onEscapeKeyDown={(event) => event.preventDefault()}
+                      onOpenAutoFocus={() => {
+                        previousFocus.current =
+                          document.activeElement instanceof HTMLElement
+                            ? document.activeElement
+                            : null;
+                      }}
+                      onCloseAutoFocus={(event) => {
+                        event.preventDefault();
+                        previousFocus.current?.focus();
+                      }}
+                    >
+                      <motion.div
+                        ref={panelRef}
+                        variants={panelVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        onAnimationComplete={(def) => {
+                          if (def === "visible" && panelRef.current) {
+                            panelRef.current.style.willChange = "auto";
+                          }
+                        }}
+                        style={{
+                          willChange: "transform, opacity",
+                          transform: "translateZ(0)",
+                          backfaceVisibility: "hidden",
+                          WebkitBackfaceVisibility: "hidden",
+                        }}
+                        className={cn(
+                          "absolute flex flex-col bg-card text-card-foreground shadow-modal outline-none",
+                          SIDE_ANCHOR[side],
+                          sizeClassName,
+                          className,
+                        )}
+                        role="dialog"
+                        aria-modal="true"
+                      >
+                        <PanelChrome
+                          activePage={activePage}
+                          canGoBack={canGoBack}
+                          goBack={goBack}
+                          close={close}
+                        />
+
+                        {/* Scroll owner: the drawer's scrollbar lives here, at the panel's
 										    right edge, under the fixed chrome. Also the sticky context for
 										    any position:sticky children. */}
-                    <AnimatePresence mode="wait" custom={direction}>
-                      <motion.div
-                        key={currentPageId}
-                        custom={direction}
-                        variants={drawerPageVariants}
-                        initial={direction === "idle" ? false : "enter"}
-                        animate="center"
-                        exit="exit"
-                        className={cn(
-                          "flex h-full flex-col overflow-x-hidden",
-                          scroll
-                            ? "overflow-y-auto overscroll-contain scrollbar-thin-primary"
-                            : "overflow-hidden",
-                        )}
-                      >
-                        {activePage.props.children}
+                        <AnimatePresence mode="wait" custom={direction}>
+                          <motion.div
+                            key={currentPageId}
+                            custom={direction}
+                            variants={drawerPageVariants}
+                            initial={direction === "idle" ? false : "enter"}
+                            animate="center"
+                            exit="exit"
+                            className={cn(
+                              "flex h-full flex-col overflow-x-hidden",
+                              scroll
+                                ? "overflow-y-auto overscroll-contain scrollbar-thin-primary"
+                                : "overflow-hidden",
+                            )}
+                          >
+                            {activePage.props.children}
+                          </motion.div>
+                        </AnimatePresence>
                       </motion.div>
-                    </AnimatePresence>
+                    </Dialog.Content>
                   </motion.div>
-                </motion.div>
-              )}
-            </AnimatePresence>,
-            document.body,
-          )
-        : null}
-    </DrawerProvider>
+                )}
+              </AnimatePresence>,
+              document.body,
+            )
+          : null}
+      </DrawerProvider>
+    </Dialog.Root>
   );
 }
 
@@ -271,7 +301,7 @@ function PanelChrome(props: PanelChromeProps) {
           type="button"
           onClick={goBack}
           aria-label="Go back"
-          className="absolute left-4 top-4 z-40 flex items-center gap-1 rounded-full bg-white px-3 py-1.5 font-proxima-nova text-[12px] font-medium text-[#141414] shadow-[0_2px_8px_0_rgba(0,0,0,0.12)] ring-1 ring-black/5 transition-colors hover:bg-[#f5f5f5] cursor-pointer"
+          className="absolute left-4 top-4 z-40 flex h-10 items-center gap-1 rounded-sm bg-card px-3 text-xs font-medium text-foreground shadow-card transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-ring cursor-pointer"
         >
           <ChevronLeft className="size-3.5" />
           <span>{activePage.props.backTitle}</span>
@@ -283,7 +313,7 @@ function PanelChrome(props: PanelChromeProps) {
           type="button"
           onClick={close}
           aria-label="Close"
-          className="absolute right-4 top-4 z-40 flex size-9 items-center justify-center rounded-full bg-white text-[#141414] shadow-[0_2px_8px_0_rgba(0,0,0,0.12)] ring-1 ring-black/5 transition-colors hover:bg-[#f5f5f5] cursor-pointer"
+          className="absolute right-4 top-4 z-40 flex size-10 items-center justify-center rounded-sm bg-card text-foreground shadow-card transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-ring cursor-pointer"
         >
           <X className="size-5" />
         </button>
