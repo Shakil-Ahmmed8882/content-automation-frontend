@@ -1,4 +1,11 @@
-import { ModulePending } from "@/components/modules/shared/ModulePending";
+import { Suspense } from "react";
+import { ExecutionListSkeleton } from "@/components/modules/executions/ExecutionStateBlocks";
+import { ExecutionsHistoryPage } from "@/components/modules/executions/ExecutionsHistoryPage";
+
 export default function Page() {
-  return <ModulePending title="Executions" />;
+  return (
+    <Suspense fallback={<ExecutionListSkeleton />}>
+      <ExecutionsHistoryPage />
+    </Suspense>
+  );
 }

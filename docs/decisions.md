@@ -187,3 +187,56 @@ authenticated session becomes guest, the session provider owns expiry redirects;
 guard only redirects initial guests. This avoids racing a deliberate logout's home navigation.
 Logout cancels in-flight private queries before clearing the backend cookies, as well as before
 removing private cache entries.
+
+## D19 — Parallel slice delivery with frozen cross-worker contracts
+
+**Problem:** Slices 4-7 (`user-profile-ui`, `platforms-and-connections-ui`, `post-composer-ui`,
+`publish-and-executions-ui`) are independent products of the same plan, but building them one
+after another wastes most of the available execution time, while building them simultaneously
+risks two authors editing the same file.
+**Decision:** Each slice is owned by one worker with an exclusive file boundary, recorded in
+`openspec/EXECUTION-STATE.md`. Files consumed by more than one slice are frozen contracts:
+`connection.hook.ts` keeps `useConnections` / `usePlatforms` / `connectionQueryKey` and adds
+`useConnectedPlatformKeys()`; `src/types/connection.type.ts` may gain fields but never lose them;
+`src/lib/status.ts` keeps its existing `executionStatus` record for the dashboard widgets.
+Shared infrastructure (`package.json`, `docs/`, `src/routes/`, `src/lib/apiClient.ts`,
+`providers/`, `globals.css`, layout and reusable blocks) stays single-owner.
+**Why:** Ownership boundaries, not coordination chatter, are what actually prevent conflicts;
+the frozen signatures let dependent slices be written before their dependency is finished.
+
+## D20 — The publish panel is a drop-in component, not an edit to the post page
+
+**Problem:** `publish-and-executions-ui` has to put a publish control on `/posts/[id]`, which
+belongs to `post-composer-ui`. Both slices were being built at the same time.
+**Decision:** `post-composer-ui` leaves a marked placeholder on the post detail page;
+`publish-and-executions-ui` ships `components/modules/executions/PublishPanel.tsx`
+(`PublishPanel({ postId })`) which reads its pre-selected platforms from the
+`?publish=<comma-separated-keys>` query parameter that the composer's "Save & publish" sets.
+The two are wired together in a single integration step.
+**Why:** Keeps the cross-slice seam to one component boundary and one query-parameter contract,
+so neither slice has to wait for the other.
+
+## D21 — `@xyflow/react` for the execution workflow graph
+
+**Problem:** PRD sections 11 and 26 ask for a visual workflow of a publish run
+(START -> PREPARE CONTENT -> one node per platform -> END) with live status.
+**Decision:** Added `@xyflow/react` v12, rendered read-only (`nodesDraggable`,
+`nodesConnectable`, `elementsSelectable` all false) and styled with the existing dark tokens.
+The per-platform status list stays on the page as the text equivalent.
+**Why:** Hand-rolling node layout, edge routing and panning is a large amount of code for a
+view the PRD describes precisely; the graph must never be the only way to read status, so the
+accessible list remains authoritative.
+
+## D22 — Local backend runs through a temporary dev entry
+
+**Problem:** The backend's committed `.env` points `REDIS_*` at a Render-internal hostname that
+does not resolve off-platform, and its empty `REDIS_USER` makes node-redis send a two-argument
+`AUTH` that the bundled portable Redis 5 rejects, so the API could not boot locally and no slice
+could be verified against real data.
+**Decision:** Added `content-automation-backend/scripts/dev-local-redis.ts`, which patches the
+resolved config object (overriding `process.env` is not enough, because `src/app/config`
+re-runs `dotenv.config()`) and then boots the normal server. Verification fixtures are seeded
+through the public API plus `scripts/seed-demo-connections.ts`.
+**Why:** Verifying against the real API beats verifying against assumptions; patching a local-only
+dev entry leaves the committed environment file untouched. Both scripts are temporary and should
+be deleted once `.env` carries working local Redis defaults.

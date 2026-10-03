@@ -1,4 +1,7 @@
-import { ModulePending } from "@/components/modules/shared/ModulePending";
+import ConnectionsPage from "@/components/modules/connections/ConnectionsPage";
+
+export const metadata = { title: "Connections" };
+
 export default function Page() {
-  return <ModulePending title="Connections" />;
+  return <ConnectionsPage />;
 }

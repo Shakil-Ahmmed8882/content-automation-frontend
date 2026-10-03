@@ -6,6 +6,7 @@ import { PremiumBadge } from "@/components/modules/shared/PremiumBadge";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/hooks/auth.hook";
 import { routes } from "@/routes";
+import { PostsList } from "../posts/PostsList";
 import {
   ConnectionsSummaryCard,
   RecentExecutionsCard,
@@ -102,6 +103,7 @@ export default function DashboardOverview() {
         <ConnectionsSummaryCard />
         <RecentExecutionsCard />
       </div>
+      <PostsList />
     </>
   );
 }

@@ -1,4 +1,7 @@
-import { ModulePending } from "@/components/modules/shared/ModulePending";
+import { ComposerForm } from "@/components/modules/posts/ComposerForm";
+
+export const metadata = { title: "Create post" };
+
 export default function Page() {
-  return <ModulePending title="Create post" />;
+  return <ComposerForm />;
 }

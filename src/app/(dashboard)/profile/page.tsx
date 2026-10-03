@@ -1,4 +1,7 @@
-import { ModulePending } from "@/components/modules/shared/ModulePending";
-export default function Page() {
-  return <ModulePending title="Profile" />;
+import ProfilePageClient from "@/components/modules/profile/ProfilePageClient";
+
+export const metadata = { title: "Profile" };
+
+export default function ProfilePage() {
+  return <ProfilePageClient />;
 }

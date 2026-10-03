@@ -1,3 +1,7 @@
+import type { Platform } from "./platform.type";
+
+export type { Platform };
+
 export interface Connection {
   id: string;
   platform: { key: string; name: string };
@@ -7,15 +11,22 @@ export interface Connection {
   createdAt: string;
 }
 
-export interface Platform {
+export interface ConnectionAuthUrl {
+  authUrl: string;
+}
+
+export interface FacebookPage {
   id: string;
+  name: string;
+}
+
+export type ConnectionCallbackResult =
+  | { kind: "connected"; connection: Connection }
+  | { kind: "select-page"; pages: FacebookPage[] };
+
+export interface ConnectedPlatformKey {
   key: string;
   name: string;
-  logoUrl: string | null;
-  logoPublicId: string | null;
-  status: "LIVE" | "COMING_SOON";
-  isActive: boolean;
-  sortOrder: number;
-  createdAt: string;
-  updatedAt: string;
+  status: "CONNECTED" | "EXPIRED";
+  accountName: string | null;
 }
