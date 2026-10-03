@@ -15,10 +15,6 @@ TanStack Query · ofetch · react-hook-form + zod · framer-motion · Biome · b
 - `docs/ui-spec.md` — every screen: layout, components, API calls, states, copy.
 - `docs/frontend-architecture.md` — apiClient, cache/invalidation, session, polling, uploads, security.
 - `docs/spec-traceability.md` — each backend requirement / PRD section → frontend change.
-- `docs/api-contract.md` — every endpoint, verified from backend source (request, response, errors, quirks).
-- `docs/ui-spec.md` — every screen: layout, components, API calls, states, copy.
-- `docs/frontend-architecture.md` — apiClient, cache/invalidation, session, polling, uploads, security.
-- `docs/spec-traceability.md` — each backend requirement / PRD section → frontend change.
 - `docs/decisions.md` — why every dependency / non-trivial choice exists.
 
 ## Build order (OpenSpec changes — one slice at a time, never the whole app)
