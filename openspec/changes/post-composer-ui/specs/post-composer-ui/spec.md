@@ -99,3 +99,25 @@ it after confirmation.
 #### Scenario: Confirmed delete
 - **WHEN** the user confirms Delete in the modal
 - **THEN** the system SHALL call `DELETE /posts/:id`, show a toast, remove it from the list, and return to the list
+
+### Requirement: Posts are immutable in the UI
+
+The system SHALL NOT offer any edit control for a saved post's content, title or image, because the
+backend exposes no update operation and history must show exactly what was published.
+
+#### Scenario: No edit path
+- **WHEN** a user views a post detail or list item
+- **THEN** only View, Publish and Delete actions SHALL be offered and a "Posts can't be edited after saving" hint SHALL explain it
+
+### Requirement: Composer feedback and unsaved-work protection
+
+The system SHALL show a pending state on submit, prevent double submission, and warn before the user
+navigates away from a composer that has unsaved content.
+
+#### Scenario: Double submit
+- **WHEN** the user clicks Save twice quickly
+- **THEN** only one `POST /posts` SHALL be sent
+
+#### Scenario: Leaving with unsaved text
+- **WHEN** the user navigates away with non-empty unsaved content
+- **THEN** the system SHALL ask for confirmation before discarding it

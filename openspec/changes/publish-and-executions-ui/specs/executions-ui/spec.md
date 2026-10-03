@@ -99,3 +99,64 @@ The system SHALL offer Retry on failed publications and for the whole execution,
 #### Scenario: Nothing to retry
 - **WHEN** no publication is `retryable`
 - **THEN** Retry controls SHALL NOT be shown
+
+### Requirement: Visible read-only workflow
+
+The system SHALL render the publishing workflow with React Flow on the execution detail page as a fixed,
+read-only graph START -> PREPARE CONTENT -> one node per targeted platform (LinkedIn, Facebook) -> END, with
+clearly visible connecting edges, and SHALL colour each node from the current execution and publication
+statuses (pending, running, success, failed). The graph SHALL NOT be draggable, connectable or editable.
+
+#### Scenario: Graph shows the structure
+- **WHEN** a user opens an execution that targeted LinkedIn and Facebook
+- **THEN** the system SHALL show START, PREPARE CONTENT, LINKEDIN, FACEBOOK and END nodes joined by edges
+
+#### Scenario: Node state follows execution state
+- **WHEN** LinkedIn succeeds and Facebook fails
+- **THEN** the LinkedIn node SHALL show success, the Facebook node SHALL show failed, and the graph SHALL update during polling without reload
+
+#### Scenario: Read-only
+- **WHEN** the user tries to drag a node or draw an edge
+- **THEN** nothing SHALL change, and the same status SHALL also be available as text/badges for accessibility
+
+### Requirement: "You can leave this page" feedback
+
+The system SHALL tell the user after a publish starts that "Publishing started. You can leave this page."
+and that the run continues on the server, and SHALL still show current status when they return later.
+
+#### Scenario: Leave and return
+- **WHEN** a user starts a publish, closes the tab, and opens `/executions/<id>` later
+- **THEN** the system SHALL show the up-to-date per-platform results
+
+### Requirement: Publish validation parity
+
+The system SHALL disable Publish Now until at least one connected platform is selected and the post has
+content, and SHALL show the PRD messages "Select at least one platform", "Connect LinkedIn before
+publishing" and "Facebook connection has expired. Please reconnect." for the matching conditions.
+
+#### Scenario: Nothing selected
+- **WHEN** no platform is checked
+- **THEN** Publish Now SHALL be disabled with "Select at least one platform"
+
+### Requirement: Outcome copy and history fidelity
+
+The system SHALL phrase terminal outcomes as "Published successfully.", "LinkedIn published successfully,
+but Facebook failed." (naming the real platforms), or "Publishing failed. You can retry.", and SHALL keep
+showing a publication's recorded account name after its connection was disconnected.
+
+#### Scenario: Partial outcome copy
+- **WHEN** an execution ends PARTIALLY_COMPLETED with Facebook failed
+- **THEN** the toast SHALL read "LinkedIn published successfully, but Facebook failed."
+
+#### Scenario: Disconnected platform history
+- **WHEN** a user disconnected a platform after publishing
+- **THEN** the execution detail SHALL still show that publication's account name and result
+
+### Requirement: Retry after reconnecting
+
+The system SHALL let a user reconnect a platform from the retry guidance link and then retry the failed
+publication successfully with the new connection.
+
+#### Scenario: Reconnect then retry
+- **WHEN** a retry is refused because the platform is not connected, and the user reconnects and returns
+- **THEN** Retry SHALL be available and, when clicked, SHALL queue the publication

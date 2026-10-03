@@ -20,6 +20,7 @@ code, log in and out, and recover a forgotten password, and the app needs one re
   attempt (cookie-based) and retries the original request; failure clears the session.
 - **Redirect rules:** signed-in users are bounced from `/login`, `/register`, `/forgot-password`,
   `/reset-password` to `/dashboard`; guests on protected routes go to `/login?next=`.
+- **No fake controls:** no Google/social button until the backend ships the route; session-expired notice.
 - **Error and rate-limit messaging:** field errors from zod, server `message` toasts, a distinct
   "Too many attempts" state for HTTP 429 (auth limiter: 20 requests / 15 min / IP).
 

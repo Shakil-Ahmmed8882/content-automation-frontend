@@ -110,3 +110,22 @@ retry message on network failure, with the submit button showing a loading state
 #### Scenario: Network failure
 - **WHEN** the API is unreachable
 - **THEN** the system SHALL show a retryable error and keep entered values
+
+### Requirement: No unavailable sign-in options
+
+The system SHALL NOT render a Google (or other social) sign-in control while the backend exposes no
+such endpoint, so no button pretends to work (PRD rule 4); the credentials flow is the only offered
+method.
+
+#### Scenario: Auth pages show credentials only
+- **WHEN** `/login` or `/register` renders
+- **THEN** no social sign-in button SHALL be present, and adding one later SHALL require a backend route
+
+### Requirement: Session-expiry notice
+
+The system SHALL tell the user when a session ended involuntarily and return them to where they were
+after signing in again.
+
+#### Scenario: Expired session notice
+- **WHEN** the silent refresh fails on a protected page
+- **THEN** the login page SHALL show "Your session expired. Please sign in again." and honour `next`

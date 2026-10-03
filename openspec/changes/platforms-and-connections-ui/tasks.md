@@ -28,6 +28,11 @@
 - [ ] 5.1 Wire `DeleteConfirmModal` to `disconnect(platformKey)` with pending state and toasts; verify confirm removes the connection and cancel does not.
 - [ ] 5.2 Add the Expired badge plus Reconnect action reusing the connect flow; verify with a connection whose `expiresAt` is in the past.
 
+## 5b. Consistency
+
+- [ ] 5b.1 Invalidate `["connections"]` consumers after connect/reconnect/disconnect and render one card per platform key; verify composer targets update without reload and a reconnect leaves a single card.
+- [ ] 5b.2 Verify retired (inactive) platforms never render (seed one, deactivate via admin); verify it is absent from the page and the composer.
+
 ## 6. Integration
 
 - [ ] 6.1 Make `useConnectedPlatformKeys()` return key and status so `post-composer-ui` can decide how to treat EXPIRED; verify it is exported and typed.

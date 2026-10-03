@@ -94,3 +94,25 @@ sign them out and return them to the home page.
 #### Scenario: Deletion fails
 - **WHEN** the delete request fails
 - **THEN** the system SHALL keep the modal open with the server error message
+
+### Requirement: Account actions and entry points
+
+The system SHALL show on `/profile` a Logout action and entry points to upgrade (non-premium) and to
+payment history, so the profile is the hub for account and billing actions.
+
+#### Scenario: Logout from profile
+- **WHEN** the user chooses Logout on `/profile`
+- **THEN** the system SHALL end the session and navigate to `/`
+
+#### Scenario: Billing entry points
+- **WHEN** the profile renders
+- **THEN** it SHALL link to `/payment/history`, and to `/payment` when the user is not premium
+
+### Requirement: Profile mutations give feedback and respect owner scope
+
+The system SHALL show a pending state and a success or error toast for every profile mutation, and
+SHALL never send a user id from the client (the backend resolves the user from the session).
+
+#### Scenario: No client-supplied identity
+- **WHEN** any profile request is made
+- **THEN** the URL and body SHALL contain no user id and no email

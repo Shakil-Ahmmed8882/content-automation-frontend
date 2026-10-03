@@ -19,6 +19,8 @@
 - [ ] 3.4 Build `/payment/failure` using `GET /payments/:id` to distinguish CANCELLED vs FAILED, with "Try again" and history links; verify cancel and failure sandbox paths.
 - [ ] 3.5 Handle direct visit with no stored id and no payments (neutral failure state); verify typing `/payment/success` unpaid never shows success.
 
+- [ ] 3.6 Fire the "Payment successful. Welcome to Premium." toast once (ref/flag), show the crown, and keep return pages idempotent on reload; verify reload shows SUCCESS with no second create call.
+
 ## 4. History & detail
 
 - [ ] 4.1 Build `/payment/history` table/list with `Pagination` (meta), skeleton loading and `NoResultFoundWrapper` empty state; verify pagination drives `page`/`limit`.

@@ -28,6 +28,19 @@
 - [ ] 5.2 Add status filter (`tabs`) and date range filter stored in URL search params, mapped to `status`, `dateFrom`, `dateTo`; verify filters survive refresh and sort is `-createdAt`.
 - [ ] 5.3 Row click navigates to detail; add nav entry for Executions; verify navigation and the session guard.
 
+## 5b. Workflow visualization (PRD sections 11 and 26)
+
+- [ ] 5b.1 Add `@xyflow/react`, log it in `docs/decisions.md`, and build `WorkflowGraph` (START, PREPARE CONTENT, platform nodes from publications, END; `nodesDraggable=false`, `nodesConnectable=false`, `elementsSelectable=false`, fit view, dark tokens); verify the five nodes and edges render for a two-platform execution.
+- [ ] 5b.2 Drive node state from execution/publication status (pending/running/success/failed, text plus icon, not colour only) and place it on `/executions/[id]` above the per-platform list; verify live update during polling and a mixed result.
+- [ ] 5b.3 Mobile fallback (graph pans inside its container, badge list remains); verify at 375px with no page horizontal scroll.
+
+## 5c. Publish feedback and copy
+
+- [ ] 5c.1 Show "Publishing started. You can leave this page." in the toast and on the execution page; verify closing and reopening the tab shows current status.
+- [ ] 5c.2 Disable Publish Now with "Select at least one platform" and show PRD connection messages for missing/expired connections; verify each condition.
+- [ ] 5c.3 Use the PRD outcome copy for completed/partial/failed toasts naming real platforms; verify partial wording with a forced Facebook failure.
+- [ ] 5c.4 Verify a disconnected platform still shows its account-name snapshot in history and that reconnect-then-retry succeeds; verify both.
+
 ## 6. Integration
 
 - [ ] 6.1 Verify the handoff with `post-composer-ui`: Save & publish -> post detail with pre-selected platforms -> publish -> live execution; log the contract in `docs/decisions.md`.

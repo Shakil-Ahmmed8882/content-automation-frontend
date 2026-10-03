@@ -32,6 +32,11 @@
 - [ ] 6.2 On success clear the query cache and navigate to `/`; verify the session is gone and login is refused for the deleted account.
 - [ ] 6.3 Show server error in the modal on failure; verify with a forced failure.
 
+## 6b. Account hub
+
+- [ ] 6b.1 Add Logout button (reuses `auth-ui` logout hook) and links to `/payment/history` and `/payment` (non-premium only) on `/profile`; verify each link and that logout ends at `/`.
+- [ ] 6b.2 Confirm all mutations show pending state plus success/error toast and send no user id; verify in the Network tab.
+
 ## 7. Integration
 
 - [ ] 7.1 Run `bun run check` and `tsc --noEmit`; verify both pass.

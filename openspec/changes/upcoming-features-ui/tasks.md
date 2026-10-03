@@ -11,6 +11,8 @@
 - [ ] 2.3 Add `FeatureStatusBadge` with label/style per status and neutral fallback; verify all three statuses.
 - [ ] 2.4 Add skeleton (`CardSkeletons`), empty (`NoResultFoundWrapper`) and error+retry states; verify each by throttling, emptying the table, and stopping the backend.
 
+- [ ] 2.5 Add the crown "Premium" heading badge and ensure no feature copy is hard-coded; verify cards disappear when the backend row is deleted.
+
 ## 3. Detail page
 
 - [ ] 3.1 Build `/upcoming-features/[slug]` (hero image, status, description with preserved line breaks, back link); verify with a seeded slug.

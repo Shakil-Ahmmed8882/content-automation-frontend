@@ -31,6 +31,9 @@
 - [ ] 5.3 Shared auth error component mapping 429 to the "too many attempts" state and disabling submit; verify by exceeding the limiter locally or mocking a 429.
 - [ ] 5.4 Ensure the UI ignores any dev-only `data.otp` in responses; verify it is never rendered.
 
+- [ ] 5.5 Omit any Google or social sign-in button and record the Google deferral (backend has no route) in `docs/decisions.md`; verify `/login` and `/register` render no social button.
+- [ ] 5.6 Show the session-expired notice on `/login` after a failed refresh (query flag, not stored); verify by deleting both cookies mid-session.
+
 ## 6. Integration
 
 - [ ] 6.1 Run `bun run check` and `tsc --noEmit`; verify both pass.

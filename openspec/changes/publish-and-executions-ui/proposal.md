@@ -17,6 +17,9 @@ only what failed, and review history (PRD §11–§14). This change is the UI fo
   `/executions/[id]` with per-platform result, failure reason, retry count, external URL.
 - **Retry:** per publication (`POST /publications/:id/retry`) and whole execution
   (`POST /executions/:id/retry`), shown only for failed items; resumes polling.
+- **Workflow visualization (PRD sections 11 and 26):** read-only React Flow graph START -> PREPARE CONTENT ->
+  LinkedIn/Facebook -> END on the execution page, node colours driven by live statuses (adds `@xyflow/react`).
+- **Feedback copy (PRD sections 10.2 and 21):** "Publishing started. You can leave this page." and PRD outcome wording.
 - **Status badges:** shared `ExecutionStatusBadge` / `PublicationStatusBadge`.
 
 ## Capabilities

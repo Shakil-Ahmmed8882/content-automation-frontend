@@ -85,3 +85,27 @@ After a confirmed `SUCCESS` the app SHALL reflect premium immediately.
 - **THEN** the page SHALL show provider, purpose, amount, currency, status, invoice number, transaction id, `paidAt`, `createdAt`
 - **WHEN** it returns 404
 - **THEN** the page SHALL show a "Payment not found" state
+
+### Requirement: Premium confirmation feedback
+After a confirmed SUCCESS the app SHALL tell the user "Payment successful. Welcome to Premium." and show
+the crown badge.
+
+#### Scenario: Success copy
+- **WHEN** verify returns SUCCESS for the first time in this visit
+- **THEN** a toast with that message SHALL appear once and the crown badge SHALL be visible
+
+### Requirement: Idempotent return handling
+Reloading or revisiting the return pages SHALL be safe: the app SHALL NOT create another payment, and
+SHALL show the already-settled status.
+
+#### Scenario: Reload of the success page
+- **WHEN** the user reloads `/payment/success` after a confirmed payment
+- **THEN** the page SHALL show SUCCESS again, SHALL NOT call `POST /payments/create`, and SHALL NOT repeat the welcome toast
+
+### Requirement: Gateway outcomes include non-success history
+The payment history SHALL show failed and cancelled payments alongside successful ones and SHALL NEVER
+display gateway secrets or raw gateway payloads.
+
+#### Scenario: Cancelled payment listed
+- **WHEN** the user cancelled a payment at the gateway
+- **THEN** it SHALL appear in history with a Cancelled badge

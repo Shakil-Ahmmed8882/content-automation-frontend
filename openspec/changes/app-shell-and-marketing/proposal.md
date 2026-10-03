@@ -19,6 +19,12 @@ every later feature UI to plug into.
   Post / Connections / Executions, empty states until those features ship.
 - **AuthGuard** for all `(app)` routes, driven by `GET /auth/me`.
 - **404, error boundary and loading** states for each route group.
+- **Dashboard widgets (PRD section 20):** connected platforms, recent executions, premium crown badge beside identity.
+- **Cross-cutting UX/NFR (PRD sections 21-23):** typed API error handling and feedback, global 429 and
+  session-expiry messaging, destructive-action confirmation, premium-gating rule, accessibility,
+  responsive and backend-parity validation baselines that every other change must follow.
+
+Also consumes `GET /api/v1/executions?limit=5` and `GET /api/v1/connections` (read-only widgets, hooks owned by their changes).
 
 Consumes: `GET /api/v1/auth/me` (`src/app/module/auth/auth.route.ts`, `auth.controller.ts#getMe`) via
 the session hook owned by `auth-ui`. Reads `isPremium` and `role` from the returned user row

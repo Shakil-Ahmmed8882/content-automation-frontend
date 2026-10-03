@@ -82,3 +82,26 @@ that re-runs the connect flow.
 #### Scenario: Reconnect expired account
 - **WHEN** a connection is `EXPIRED` and the user clicks Reconnect
 - **THEN** the system SHALL start the connect flow and the card SHALL show Connected after the callback succeeds
+
+### Requirement: One connection per platform and downstream refresh
+
+The system SHALL show exactly one card state per platform, so reconnecting replaces the existing
+connection rather than listing a duplicate, and SHALL refresh every consumer of connection state (composer
+targets, publish panel, dashboard widget) after connect, reconnect or disconnect.
+
+#### Scenario: Reconnect keeps a single entry
+- **WHEN** a user connects a platform that already has a connection
+- **THEN** the page SHALL show one card for it with the new account name
+
+#### Scenario: Consumers update
+- **WHEN** a platform is disconnected
+- **THEN** the composer and publish targets SHALL no longer offer it as connected without a reload
+
+### Requirement: Retired platforms are not shown
+
+The system SHALL show only the platforms returned by `GET /platforms` (active ones) and SHALL NOT
+offer retired platforms for connecting or publishing.
+
+#### Scenario: Admin retires a platform
+- **WHEN** a platform becomes inactive and the list is refetched
+- **THEN** its card SHALL disappear from the page and from the composer targets

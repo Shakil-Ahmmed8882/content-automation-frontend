@@ -39,8 +39,23 @@
 - [ ] 7.2 `error.tsx` using `CustomErrorBoundary` with retry; verify by forcing a throw on a dev-only page.
 - [ ] 7.3 `loading.tsx` skeletons per group using the skeleton blocks; verify via network throttling.
 
-## 8. Integration
+## 8. Dashboard widgets & crown
 
-- [ ] 8.1 Run `bun run check` and `tsc --noEmit`; verify both pass.
-- [ ] 8.2 Log new decisions (route groups, client-side guard, mesh gradient) in `docs/decisions.md`; verify entries exist.
-- [ ] 8.3 Playwriter pass: guest, non-premium, premium walkthrough against the local backend; verify every spec scenario.
+- [ ] 8.1 Connected-platforms widget from `useConnections()` and recent-executions widget from `GET /executions?limit=5` (hooks owned by their changes; stub until they land), each with skeleton/empty/error+retry; verify each state independently.
+- [ ] 8.2 Crown "Premium" badge beside the avatar name in navbar menu and sidebar user area, premium only; verify with premium and non-premium accounts.
+
+## 9. Cross-cutting UX/NFR
+
+- [ ] 9.1 Add `ApiError` normalisation in `lib/apiClient.ts` (message, status, field details) and a `lib/errors` helper mapping to toasts/inline states; verify a 400 with fields, a 500 and a network failure each render the right message with no raw body.
+- [ ] 9.2 Global 429 handling (message, pause polling/retries, manual retry) and session-expired toast + redirect with `next`; verify by mocking 429 on a data call and by deleting cookies mid-session.
+- [ ] 9.3 Shared confirmation pattern wrapper over `DeleteConfirmModal` (target name, Cancel default focus) and a checklist of every destructive action using it; verify cancel sends no request.
+- [ ] 9.4 Accessibility pass (focus rings, labels/aria-live errors, icon-button names, modal focus trap/return, reduced motion); verify a keyboard-only walkthrough of sidebar, a form and a modal.
+- [ ] 9.5 Responsive pass at 360/375/768/1280 px for shell and marketing, tables degrade inside containers; verify no horizontal page scroll.
+- [ ] 9.6 Publish a `src/validation` parity table (rule -> backend file) in `docs/decisions.md` and check each schema against it; verify mismatches are fixed.
+- [ ] 9.7 Premium-gating helper reading `isPremium` from session only, refetching session on 403 from premium endpoints; verify the stale-flag scenario.
+
+## 10. Integration
+
+- [ ] 10.1 Run `bun run check` and `tsc --noEmit`; verify both pass.
+- [ ] 10.2 Log new decisions (route groups, client-side guard, mesh gradient) in `docs/decisions.md`; verify entries exist.
+- [ ] 10.3 Playwriter pass: guest, non-premium, premium walkthrough against the local backend; verify every spec scenario.

@@ -18,6 +18,7 @@ starts the flow, handles the return redirect, and reflects server truth.
   the premium badge, sidebar entry and gates update without a reload.
 - **History:** `/payment/history` (paginated, optional status filter via `GET /payments`) and
   `/payment/history/[id]` detail (`GET /payments/:id`).
+- **Feedback:** "Payment successful. Welcome to Premium." toast, crown badge, idempotent reloads.
 - **States:** PENDING (still confirming), SUCCESS, FAILED, CANCELLED, double-click protection,
   already-premium state.
 

@@ -54,3 +54,10 @@ preserved by the backend).
 
 1. API/hooks/status mapping. 2. Execution detail with polling. 3. Publish panel + handoff.
 4. History list + filters. 5. Retry. 6. End-to-end with real LinkedIn/Facebook.
+
+### D7: Read-only workflow graph (React Flow)
+PRD sections 11 and 26 require a visible, non-editable workflow. `WorkflowGraph` builds nodes from the
+execution detail: START, PREPARE CONTENT, one node per publication platform, END, linked by edges, with
+node status derived from `execution.status` and each `publication.status`. Interaction props
+(`nodesDraggable`, `nodesConnectable`, `elementsSelectable`) are off; per-platform badges remain as the
+accessible text equivalent. Dependency `@xyflow/react` is logged in `docs/decisions.md`.

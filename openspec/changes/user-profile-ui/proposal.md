@@ -14,6 +14,7 @@ account-safety actions live.
 - **Change password:** `PATCH /users/me/password` with `currentPassword` + `newPassword` (min 8);
   shown only when the account has the `CREDENTIALS` provider.
 - **Delete account:** `DELETE /users/me` behind a confirm modal; success logs out and returns to `/`.
+- **Account hub (PRD section 20):** Logout action and entry points to upgrade / payment history.
 - Updates refresh the shared `session` query so navbar/sidebar show the new name and avatar.
 
 Consumes (`content-automation-backend/src/app/module/user/`): `user.route.ts`, `user.validation.ts`,

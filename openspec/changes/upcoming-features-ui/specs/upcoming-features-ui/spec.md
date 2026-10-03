@@ -73,3 +73,11 @@ The list and detail pages SHALL handle all request states.
 #### Scenario: Error
 - **WHEN** the request fails with a non-403, non-404 error
 - **THEN** the page SHALL show the error message with a Retry button
+
+### Requirement: Premium identity on the page
+The list page SHALL show a "Crown Premium" heading badge for premium users, and feature cards SHALL show
+only real, data-driven content (no hard-coded features).
+
+#### Scenario: Heading and data-driven content
+- **WHEN** a premium user opens `/upcoming-features`
+- **THEN** the heading SHALL include the crown "Premium" label and every card SHALL come from the API response

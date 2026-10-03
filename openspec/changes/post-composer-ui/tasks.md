@@ -27,6 +27,11 @@
 - [ ] 5.2 Wire `DeleteConfirmModal` to `deletePost`, invalidate list, toast, redirect to `/dashboard`; verify the post disappears and cancel keeps it.
 - [ ] 5.3 Add `/posts/[id]` to the session-required route list (`src/routes`, middleware/proxy) and nav links for Create and Posts; verify a signed-out visit redirects to login.
 
+## 5b. Immutability and guards
+
+- [ ] 5b.1 Show the immutability hint and no edit controls on detail/list; verify no edit affordance exists anywhere.
+- [ ] 5b.2 Add a submit double-click guard and an unsaved-changes leave warning on `/create`; verify one request on double click and the prompt on navigation.
+
 ## 6. Integration
 
 - [ ] 6.1 Check dark-theme styling per `src/design-system/vercel-design-system.md` at mobile and desktop widths; verify visually with Playwriter.
