@@ -1,4 +1,5 @@
-import { ModulePending } from "@/components/modules/shared/ModulePending";
+import { UpgradePage } from "@/components/modules/payment/UpgradePage";
+
 export default function Page() {
-  return <ModulePending title="Premium membership" />;
+  return <UpgradePage />;
 }
