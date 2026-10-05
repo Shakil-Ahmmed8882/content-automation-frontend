@@ -240,3 +240,141 @@ through the public API plus `scripts/seed-demo-connections.ts`.
 **Why:** Verifying against the real API beats verifying against assumptions; patching a local-only
 dev entry leaves the committed environment file untouched. Both scripts are temporary and should
 be deleted once `.env` carries working local Redis defaults.
+
+## D23 — Per-slice implementation decisions (slices 4–9)
+
+Merged from each change's working notes.
+
+### user-profile-ui
+
+- Implemented the profile data flow as `component -> hook -> apiClient`, using `/users/me` for profile detail and `/auth/me` only through the existing session cache.
+- Kept profile and session caches synchronized after profile mutations by writing the returned profile to `["profile"]` and projecting it into `["session"]`.
+- Sent only backend-authorized owner-scoped requests: no user id, no email on name update, and no client-side token handling.
+- Added avatar client pre-checks for `image/*` and 5 MB before uploading multipart data with the `avatar` field.
+- Split the profile UI into focused feature components under `src/components/modules/profile/`: page composition, state views, shared presentation, identity/avatar, account/premium, password, session, and danger-zone flows.
+- Rebuilt account deletion with `MultipageModal`: the danger zone only shows a trigger, the first modal page contains the warning and typed `DELETE` confirmation, and the outcome pages reuse the shared success/error variation. A short redirect delay lets the success outcome render before clearing caches and navigating home.
+- Did not add dependencies.
+
+## Blockers
+
+- Browser and real-session verification are reserved for the orchestrator by the worker contract, so network-tab checks, premium/non-premium account checks, and real login/delete scenarios were not run here.
+
+### platforms-and-connections-ui
+
+- Kept the frozen shared hook contract in `src/hooks/connection.hook.ts`: `connectionQueryKey`, `platformQueryKey`, `useConnections()`, and `usePlatforms()` remain exported with the required shapes.
+- Added `src/types/platform.type.ts` for the platform catalogue while re-exporting `Platform` from `src/types/connection.type.ts` so existing imports keep working.
+- Kept `listPlatforms` as a compatibility re-export from `connection.api.ts`; new code imports `getPlatforms` from `platform.api.ts`.
+- `useConnectedPlatformKeys()` returns active, LIVE platform connections only, with shape `{ key, name, status, accountName }`; `EXPIRED` is included so downstream UI can block or prompt reconnect.
+- The OAuth callback is a client handler with a ref guard, not a query, so the single-use `code`/`state` pair is submitted once under React strict mode.
+- The Facebook Page picker uses the required `MultipageModal` and fetches `["fb-pages"]` on open so a refresh can resume while the backend Redis stash is valid.
+- Error banners use safe error codes in the URL (`cancelled`, `invalid-state`, `failed`); backend messages are shown via toast at the time of the failed API call.
+
+## Deviations
+
+- Browser/network verification, Playwriter visual verification, and full live OAuth were not run in this worker because the task explicitly reserves dev server/browser orchestration for the coordinator.
+- `bun run check`, `bun run build`, and `next build` were not run because this worker was explicitly forbidden to run them. Required local validation was limited to `npx tsc --noEmit --incremental false` and the scoped Biome command.
+
+## Blockers
+
+- B-01: Live LinkedIn/Facebook OAuth cannot be completed until a human registers frontend redirect URIs in the provider consoles and backend env. Required values:
+  - `LINKEDIN_REDIRECT_URI=<FRONTEND_URL>/connections/callback/linkedin`
+  - `FACEBOOK_REDIRECT_URI=<FRONTEND_URL>/connections/callback/facebook`
+  - For local `FRONTEND_URL=http://localhost:3000`, register `http://localhost:3000/connections/callback/linkedin` and `http://localhost:3000/connections/callback/facebook`.
+
+### post-composer-ui
+
+## Decisions
+
+- Implemented the repo naming convention from the coordination note: `src/types/post.type.ts`, `src/validation/post.validation.ts`, `src/api/post.api.ts`, and `src/hooks/post.hook.ts`.
+- `POST /posts` is built with `FormData` and does not set `Content-Type`; the browser owns the multipart boundary.
+- Image selection uses `AttachmentField` with `maxSizeKb={5120}`, which runs the shared `prepareImage` helper and keeps the composer to one held file by replacing the previous image on add.
+- Save & publish creates the immutable post first, then navigates to `/posts/<id>?publish=<comma-separated-platform-keys>`. The publish slice owns reading that query param and rendering `<PublishPanel postId={post.id} />`.
+- `/posts/[id]` contains the publish handoff placeholder in `src/components/modules/posts/PostDetailView.tsx` beside the post content.
+- The dashboard keeps the existing overview, connection and execution widgets, and appends the posts list below them.
+- `/posts/[id]` is implemented under the guarded `(dashboard)` route group; `routes.postDetail(id)` already existed and no route/config files were edited.
+
+## Deviations
+
+- The tasks file references bare `src/types/post.ts`, `src/api/post.ts`, `src/hooks/usePosts.ts`, and `src/validation/post.ts`; the coordination note supersedes that with the repo convention names above.
+- The tasks file asks to document the publish contract in `docs/decisions.md`, but this worker owns only the OpenSpec change decisions file, so the contract is recorded here.
+- Browser/network-panel, visual Playwriter, and end-to-end backend verification were not run because the coordination instructions explicitly forbid browser/Playwriter and dev/build ownership for this worker.
+
+## Blockers
+
+- None for code implementation.
+- Manual browser verification remains for the orchestrator/integration pass.
+
+### publish-and-executions-ui
+
+- Kept the existing file names (`execution.type.ts`, `execution.api.ts`, `execution.hook.ts`, `status.ts`) to match the repository convention and the W4 ownership contract, even where the original OpenSpec task text used shorter names.
+- `PublishPanel` is standalone at `src/components/modules/executions/PublishPanel.tsx` and fetches the post content via `GET /posts/:id` so it can enforce the "no empty post" publish disable state while only receiving `postId`.
+- Publish is never automatic: `?publish=` only pre-selects connected platforms; the user must press **Publish now**.
+- The execution detail completion toast fires only after an observed active-to-terminal transition, so reopening an already finished execution does not duplicate a completion toast.
+- `@xyflow/react` was already present in `package.json` and is used only by `WorkflowGraph`; no dependency was added by W4.
+- The workflow graph hides React Flow attribution with `proOptions.hideAttribution`, uses semantic CSS variables for node styles, and keeps per-platform result cards as the accessible text equivalent.
+- Date filtering reuses the shared date filter utilities, then maps `start_date`/`end_date` to the executions API contract's `dateFrom`/`dateTo` query params.
+- The `/executions` row click navigates to `/executions/<id>`. A global sidebar/nav entry was not added because W4 must not edit layout/navigation-owned files.
+
+## Deviations
+
+- OpenSpec references logging the React Flow dependency in `docs/decisions.md`, but W4's editable docs boundary only includes this change's `decisions.md`. The dependency decision is recorded here for integration.
+- Browser/network verification and visual 375px checks were not run because the W4 instructions explicitly forbid browser/Playwriter and dev/build commands.
+
+## Blockers
+
+- B-01/B-02: A live publish run needs real LinkedIn/Facebook connections. Those require provider-console redirect URIs and a human OAuth consent click. To verify end-to-end, a human must connect/reconnect live LinkedIn and Facebook Page accounts, then run Save & publish -> post detail handoff -> Publish now -> execution detail -> forced failure/retry -> history.
+
+### premium-payment-ui
+
+- No new dependencies. Reused ofetch client, TanStack Query, zod, sonner, lucide, existing pagination/tabs/skeleton blocks.
+- File names follow the repo convention (`payment.type.ts`, `payment.validation.ts`, `payment.api.ts`, `payment.hook.ts`), not the names in tasks.md.
+- Pending payment id is kept in `sessionStorage["ca.pendingPaymentId"]` (try/catch guarded) because the backend callback redirect carries no query params. Fallback: newest payment from `GET /payments?limit=1`, only if created within 30 minutes (avoids showing an old success for a hand-typed URL).
+- Return-page order follows docs/ui-spec S16/S17 (overrides design.md D2): read `GET /payments/:id` first; call `POST /payments/verify` only from the success page and only while the payment is PENDING. Verify on an abandoned payment can flip it to FAILED, so history, detail and the failure page never call verify (they re-read only).
+- PENDING handling: verify once, then up to 2 automatic re-reads 2 s apart, then a manual "Check again" (which verifies at most once more).
+- On SUCCESS: invalidate `["session"]`, `["profile"]`, `["payments"]`, clear the stored id. The welcome toast is deduped across reloads with `sessionStorage["ca.paymentWelcomeToast"] = paymentId`.
+- Failure page redirects to `/payment/success` if the payment turns out to be SUCCESS (callback race).
+- Upgrade page shows no price: the backend does not expose amount/currency before payment exists (ui-spec GAP). Amount only appears in history/detail. `redirectUrl` must be https or it is treated as a create failure. Double-click guarded by a ref plus the mutation pending state plus a `redirecting` flag.
+- Payment status badge tones and formatters live in `components/modules/payment/payment.utils.ts` (could not touch `lib/status.ts`). `payment.hook.ts` imports the storage helpers from that file.
+- Money formatting uses `Intl.NumberFormat` currency style with a plain `amount currency` fallback; amount accepted as string or number.
+- History uses semantic link rows (stacked on mobile) instead of a table because no shadcn `table` component is installed and adding one is out of ownership.
+
+### upcoming-features-ui
+
+- No new dependencies.
+- Gate: premium flag comes from `useSession()` (session cache is synced from the profile). Non-premium
+  users never call the data endpoint (`enabled: isPremium`); a 403 from the API also renders the same
+  `UpgradeGate`. While the session is unresolved the page shows the skeleton, never forbidden content.
+- Server order is display order; no client-side sort.
+- Retry policy: no retry on 4xx (403/404 are definitive), one retry otherwise.
+- Detail query key `["upcoming-feature", slug]` is seeded from the cached list (`initialData`), still
+  refetched when stale. 404 renders an in-page "Feature not found" state.
+- Empty/error states are local cards in `FeatureStates.tsx` (same pattern as connections) because
+  `NoResultFoundWrapper` hardcodes light-theme hex colours (`#141414`, `#666`) that are unreadable in
+  the dark-only theme; `CardSkeletonV2` is still used for loading. Shared-file note, not modified.
+- Status badges use semantic tokens only: COMING_SOON success, IN_DEVELOPMENT warning, PLANNED muted;
+  unknown values fall back to a muted badge with a humanised label.
+- Missing `imageUrl` renders a muted tile with the title initial; images use `BaseImage`.
+- Description rendered as text with `whitespace-pre-line` (no HTML injection).
+- Sidebar gating already exists in `nav.routes.ts`; no change made.
+
+### admin-console-ui
+
+- Admin guard lives in `AdminGuard` (client), rendered by `(dashboard)/admin/layout.tsx`. It is a UX gate only: children (and therefore every admin request) mount only for `ADMIN`/`SUPER_ADMIN` sessions; others see the Forbidden view. The parent `AuthGuard` already redirects anonymous visitors to `/login?next=`; the guard repeats the redirect defensively. Backend 403s are still surfaced as toasts.
+- `/admin` redirects server-side to `/admin/platforms`.
+- Admin tabs are plain `Link`s with `aria-current`, not `ScrollableTabsHeader`: that block is state-driven with light hard-coded colours, while admin sections are real routes.
+- File naming follows the repo convention (`admin-platform.api.ts`, `admin-platform.hook.ts`, `admin.type.ts`, `admin.validation.ts`) instead of the nested paths in `tasks.md`.
+- The shared `MultipageModal` panel is white; `AdminModal` overrides it with `!bg-card !text-card-foreground` instead of editing the shared block. `DeleteConfirmModal` is reused as-is (it is a light modal; same precedent as the posts module).
+- User actions (block/unblock, premium, role) confirm inline inside the detail drawer rather than through `DeleteConfirmModal`: the drawer sits at z-999999 and the confirm modal at z-99999, so the modal would render behind it. The inline confirm defaults focus to Cancel.
+- Images are a second step (D4): JSON save first, then multipart `logo`/`image`. If the upload fails the record is kept, a toast explains it, and the picked `File` is held in page state so the row shows "Retry upload".
+- `sortOrder` is held as a string in the form (numeric `TextField` yields strings) validated by `/^-?\d+$/` and converted with `Number()` on submit, so the backend always receives a JSON integer. This avoids `z.coerce` input-type friction with `GenericForm`.
+- Platform edit reuses the create schema with `key` read-only/disabled (its value always validates); the PATCH body never includes `key`.
+- 409 on create/edit is shown inline on `key` (platform) or `slug` (feature) using the backend message.
+- Pagination reuses the shared `Pagination` through `AdminPager`, a small bridge that keeps the URL as the source of truth and maps backend `meta` (`page,limit,total,totalPages`) to the block's meta shape.
+- Audit filters (`action`, `entityType`) are selects of known values with an "Other..." free-text fallback; `actorId` is a debounced text input; all live in URL params and reset `page`. The API has no actor name, so ids are shown in mono with copy and "Filter by this actor".
+- Platform mutations invalidate `["admin","platforms"]` and `["platforms"]`; feature mutations invalidate `["admin","features"]`, `["upcoming-features"]`, `["upcoming-feature"]`; user mutations write `["admin","user",id]` and invalidate `["admin","users"]` and `["admin","audit-logs"]`.
+- Not implemented (UX policy only, not enforced by the backend): hiding block/premium controls for equal or higher roles. Only self-row status/role and deleted-user actions are disabled, per `docs/ui-spec.md` S23.
+- No tables/badges from shadcn exist in `components/ui`, so semantic `<table>` markup and a small token-styled `AdminBadge` are used. No dependencies were added.
+
+## Blockers
+
+- Browser verification (guards for USER/ADMIN/anonymous, multipart field names, audit entries, role-specific controls) is left for the orchestrator pass; the backend was not running.

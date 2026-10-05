@@ -1,6 +1,6 @@
 ## 1. API & hooks (vertical slice)
 
-- [ ] 1.1 Add `src/types/upcomingFeature.ts` (`UpcomingFeature`, `UpcomingFeatureStatus`) matching `prisma/schema/upcomingFeature.prisma`; verify fields against the live response and tsc passes.
+- [x] 1.1 Add `src/types/upcomingFeature.ts` (`UpcomingFeature`, `UpcomingFeatureStatus`) matching `prisma/schema/upcomingFeature.prisma`; verify fields against the live response and tsc passes.
 - [ ] 1.2 Add `src/api/upcomingFeatures.ts` (`listUpcomingFeatures`, `getUpcomingFeatureBySlug`) via ofetch with credentials include and envelope unwrapping; verify with a premium session in the network log.
 - [ ] 1.3 Add `src/hooks/useUpcomingFeatures.ts` (`useUpcomingFeatures`, `useUpcomingFeature(slug)`) with keys, `enabled` tied to `isPremium`, and 403 surfaced as a typed `forbidden` flag; verify a non-premium account sets it.
 
@@ -26,6 +26,6 @@
 
 ## 5. Integration
 
-- [ ] 5.1 Run Biome check and `tsc --noEmit`; verify both pass.
+- [x] 5.1 Run Biome check and `tsc --noEmit`; verify both pass.
 - [ ] 5.2 Log decisions (profile-flag + 403 gate, server order) in `docs/decisions.md`; verify entries exist.
 - [ ] 5.3 End-to-end Playwriter run with a non-premium then premium account (gate -> upgrade -> list -> detail); verify each state.

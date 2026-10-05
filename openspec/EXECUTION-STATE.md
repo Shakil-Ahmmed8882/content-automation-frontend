@@ -4,8 +4,8 @@ Resume checkpoint for the frontend OpenSpec build. Update this file whenever a w
 unit changes state. If work is interrupted, start here, then verify against the
 repository before redoing anything.
 
-Last updated: 2026-10-03, end of session 1 (parallel slices 4 → 7). All four workers
-finished; what remains is the orchestrator's browser-verification pass.
+Last updated: 2026-10-06, end of session 2 (parallel slices 8 → 10). Slices 4–10 are all code-complete;
+`tsc` and `bun run build` pass (27 routes). What remains is browser verification and the blockers below.
 
 ## Module status
 
@@ -18,9 +18,9 @@ finished; what remains is the orchestrator's browser-verification pass.
 | 5 | `platforms-and-connections-ui` | W2-CONN | CODE COMPLETE (17/20) — remaining 3 are the browser pass + live OAuth (B-01) |
 | 6 | `post-composer-ui` | W3-POST | CODE COMPLETE (16/18) — remaining 2 are the browser pass |
 | 7 | `publish-and-executions-ui` | W4-EXEC | CODE COMPLETE (21/25) — remaining 4 are the browser pass + live publish (B-02) |
-| 8 | `premium-payment-ui` | — | NOT STARTED (`/payment`, `/payment/history` are placeholders) |
-| 9 | `upcoming-features-ui` | — | NOT STARTED |
-| 10 | `admin-console-ui` | — | NOT STARTED |
+| 8 | `premium-payment-ui` | W5-PAY | CODE COMPLETE; browser-verified: upgrade → single `POST /payments/create` on double-click → bKash sandbox redirect; abandoned payment on `/payment/success` shows "Payment failed", never success. Not verified: sandbox success/cancel round trip (5.4), history tabs/detail |
+| 9 | `upcoming-features-ui` | W6-UPCOMING | CODE COMPLETE; browser-verified: non-premium sees the gate and makes no `/upcoming-features` request. Not verified: premium list/detail, 403 stale-flag, 404 slug |
+| 10 | `admin-console-ui` | W7-ADMIN | CODE COMPLETE; NOT browser-verified (B-03) |
 
 ## What was verified in the browser before the session ended
 
@@ -169,3 +169,29 @@ Log in with the demo account (`demo@content-automation.test` / `Demo-posts-2026!
 form prefills it. If the dev database is ever reset, re-seed with: register + verify through
 the API (the OTP is returned in the response because `EXPOSE_OTP_IN_RESPONSE=true`), then
 `npx tsx scripts/seed-demo-connections.ts`.
+
+## Session 2 log (2026-10-06)
+
+- Environment restarted (Postgres, Redis, API, dev server); demo-account smoke test of
+  `/profile /connections /create /executions /upcoming-features /payment /payment/history`: all render,
+  console clean apart from the expected pre-login 401.
+- Fixed nested `<main>` landmarks (profile, connections, executions detail, upcoming features, OAuth
+  callback) — the dashboard shell already provides `<main id="main">`.
+- Per-slice `decisions.md` files merged into `docs/decisions.md` as D23.
+- Follow-ups recorded, not done (out of scope): `NoResultFoundWrapper` hard-codes light-theme colours and
+  `CardSkeletonV2` has `bg-white` — both unreadable on dark; `MultipageModal` / `DeleteConfirmModal` are
+  light panels (admin overrides locally); `DeleteConfirmModal` z-index sits below drawers.
+
+## Blockers (updated)
+
+- B-01, B-02 — unchanged (live OAuth / live publishing; need provider consoles + a human consent click).
+- B-03 — Admin browser pass: logging in as the seeded SUPER_ADMIN/ADMIN was declined by the permission
+  classifier. Needs the user to either log in themselves in a browser, or explicitly allow it.
+- B-04 — bKash sandbox success/cancel round trip needs the sandbox wallet OTP step done by a human.
+
+## Next actions
+
+1. User decision on B-03 → run the admin pass (guards for USER/ADMIN/anonymous, `logo`/`image` multipart, audit rows).
+2. Premium browser pass (sandbox success → badge + sidebar swap without reload).
+3. Remaining `tasks.md` boxes that need a browser; `app-shell-and-marketing/tasks.md` still unticked.
+4. Push (nothing pushed this session).

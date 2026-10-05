@@ -1,6 +1,6 @@
 ## 1. Guard & shell
 
-- [ ] 1.1 Add `src/types/admin.ts` (`Role`, `UserStatus`, `AdminUser`, `AuditLog`, `Platform`) matching backend `SAFE_USER_SELECT`/`AuditLog`/`Platform` models; verify tsc passes.
+- [x] 1.1 Add `src/types/admin.ts` (`Role`, `UserStatus`, `AdminUser`, `AuditLog`, `Platform`) matching backend `SAFE_USER_SELECT`/`AuditLog`/`Platform` models; verify tsc passes.
 - [ ] 1.2 Build `/admin/layout` with role guard (Forbidden for USER, login redirect for anonymous) and an admin sub-nav (`tabs`); verify with USER, ADMIN and anonymous sessions.
 - [ ] 1.3 Show the sidebar Admin entry via `ShowIf` on role; verify it is absent for USER.
 
@@ -35,6 +35,6 @@
 
 ## 6. Integration
 
-- [ ] 6.1 Run Biome check and `tsc --noEmit`; verify both pass.
+- [x] 6.1 Run Biome check and `tsc --noEmit`; verify both pass.
 - [ ] 6.2 Log decisions (layout guard, two-step image upload, audit filter selects) in `docs/decisions.md`; verify entries exist.
 - [ ] 6.3 End-to-end Playwriter run as SUPER_ADMIN and ADMIN across all four sections; verify role-specific controls and audit entries created by the actions.

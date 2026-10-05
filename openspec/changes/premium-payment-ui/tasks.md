@@ -1,6 +1,6 @@
 ## 1. API & types (vertical slice)
 
-- [ ] 1.1 Add `src/types/payment.ts` (`PaymentStatus`, `Payment` = toPublicPayment shape, `CreatePaymentResult { paymentId, redirectUrl }`) and `src/validation/payment.ts` (`verify` zod `{ paymentId }`); verify types match `payment.service.ts` and tsc passes.
+- [x] 1.1 Add `src/types/payment.ts` (`PaymentStatus`, `Payment` = toPublicPayment shape, `CreatePaymentResult { paymentId, redirectUrl }`) and `src/validation/payment.ts` (`verify` zod `{ paymentId }`); verify types match `payment.service.ts` and tsc passes.
 - [ ] 1.2 Add `src/api/payment.ts` with `createPayment`, `verifyPayment`, `getPayment(id)`, `listPayments({page,limit,status})` using the ofetch client (credentials include) and unwrapping the `sendResponse` envelope incl. `meta`; verify against the live backend via curl/Playwriter network log.
 - [ ] 1.3 Add `src/hooks/usePayments.ts` (`useCreatePayment`, `useVerifyPayment`, `usePayment`, `usePaymentHistory`) with query keys; verify hooks return typed data and surface backend `message` on error.
 
@@ -31,6 +31,6 @@
 ## 5. Integration & docs
 
 - [ ] 5.1 Add routes to the route config, add "Payment" nav + history link, require session; verify an unauthenticated visit redirects to login.
-- [ ] 5.2 Run Biome check and `tsc --noEmit`; verify both pass.
+- [x] 5.2 Run Biome check and `tsc --noEmit`; verify both pass.
 - [ ] 5.3 Log decisions (sessionStorage paymentId, verify-on-return) in `docs/decisions.md`; verify entries exist.
 - [ ] 5.4 End-to-end Playwriter run: upgrade -> bKash sandbox -> success -> badge visible -> history shows SUCCESS; verify, then repeat for cancel.
