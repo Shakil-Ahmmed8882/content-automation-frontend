@@ -10,7 +10,7 @@ import type { TabsItemProps } from "./tabs.type";
 export const TabsItem = React.forwardRef<HTMLDivElement, TabsItemProps>(
   (props, ref) => {
     const TAB_BASE_CLASSES =
-      "flex items-center gap-2 px-4 py-2 rounded-full border-[1.5px] border-[#FAFAFA] bg-[#FAFAFA] text-[#292929] font-proxima-nova text-base leading-6 whitespace-nowrap shrink-0";
+      "flex items-center gap-2 px-4 py-2 rounded-full border-[1.5px] font-proxima-nova text-base leading-6 whitespace-nowrap shrink-0";
     const { tab, onClick, children, className, ...rest } = props;
     const { activeTabs, setActiveTabs, multiple, valueAs = "id" } = useTabs();
 
@@ -64,7 +64,7 @@ export const TabsItem = React.forwardRef<HTMLDivElement, TabsItemProps>(
                 ${TAB_BASE_CLASSES}
                 text-sm sm:text-base
                 cursor-pointer
-                ${isActive ? "bg-primary text-white" : "bg-default"}
+                ${isActive ? "border-primary bg-primary text-primary-foreground" : "border-border bg-secondary text-secondary-foreground hover:bg-accent"}
                 `}
       >
         {/* optional leading icon — accepts any JSX node */}

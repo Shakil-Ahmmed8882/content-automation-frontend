@@ -389,3 +389,15 @@ white on the dark theme. Several slices had worked around it with local empty-st
 in place and log it").
 **Why:** One fix in the shared block beats per-page workarounds; the unused demo charts and community
 skeletons in the same folder still carry light colours and were deliberately left untouched.
+
+## D25 — Tab pills use semantic tokens; page-level colour wildcards removed
+
+**Problem:** `TabItem` hard-coded `#FAFAFA` pills with `text-white` for the active state, so the
+Executions and Payment-history status filters were unreadable on dark. The two pages had masked it with
+`[&_*]:text-foreground` wildcards, which also overrode the active pill's own text colour.
+**Decision:** `TabItem` now applies `border-primary bg-primary text-primary-foreground` when active and
+`border-border bg-secondary text-secondary-foreground hover:bg-accent` otherwise (one set at a time, so
+utilities cannot fight); `ScrollableTabsHeader` uses `border-border` / `text-foreground`. The wildcard
+overrides were removed from both pages. The Pagination wrappers keep theirs for now.
+**Why:** Fixing the shared block removes the need for per-page colour wildcards, which silently break
+any child that sets its own colour.

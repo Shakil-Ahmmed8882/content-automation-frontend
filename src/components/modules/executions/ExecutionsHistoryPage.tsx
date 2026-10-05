@@ -136,7 +136,7 @@ function ExecutionsHistoryContent() {
         <ScrollableTabsHeader
           title="Executions"
           tabs={STATUS_TABS}
-          className="rounded-lg border border-border bg-card p-5 shadow-card [&_*]:border-border [&_*]:text-foreground"
+          className="rounded-lg border border-border bg-card p-5 shadow-card"
           right={
             <DateRangePresetFilter
               emptyLabel="Date"
