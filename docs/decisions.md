@@ -378,3 +378,14 @@ Merged from each change's working notes.
 ## Blockers
 
 - Browser verification (guards for USER/ADMIN/anonymous, multipart field names, audit entries, role-specific controls) is left for the orchestrator pass; the backend was not running.
+
+## D24 — Dark-theme fixes in two shared blocks
+
+**Problem:** `NoResultFoundWrapper` hard-coded light-theme text colours (`#141414`, `#666`) and a 60px pill
+button, and `CardSkeletonV2` sat on `bg-white`, so empty states were unreadable and loading cards flashed
+white on the dark theme. Several slices had worked around it with local empty-state cards.
+**Decision:** Fixed both in place with semantic tokens (`text-foreground`, `text-muted-foreground`,
+`bg-card`, `text-primary-foreground`) and the 6px in-app button radius, per CLAUDE.md ("fix genuine bugs
+in place and log it").
+**Why:** One fix in the shared block beats per-page workarounds; the unused demo charts and community
+skeletons in the same folder still carry light colours and were deliberately left untouched.

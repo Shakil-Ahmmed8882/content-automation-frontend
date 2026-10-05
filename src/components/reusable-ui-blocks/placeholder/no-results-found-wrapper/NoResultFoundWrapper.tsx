@@ -56,10 +56,10 @@ export function NoResultFoundWrapper<T>(props: NoResultFoundWrapperProps<T>) {
 
       {/* Text */}
       <div className="flex flex-col items-center gap-2 text-center max-w-xs">
-        <p className="text-[#141414] text-[28px] font-bold leading-snug">
+        <p className="text-foreground text-[28px] font-bold leading-snug">
           {title}
         </p>
-        <p className="text-[#666] text-sm leading-relaxed">{message}</p>
+        <p className="text-muted-foreground text-sm leading-relaxed">{message}</p>
       </div>
 
       {/* Try Again */}
@@ -67,9 +67,9 @@ export function NoResultFoundWrapper<T>(props: NoResultFoundWrapperProps<T>) {
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-[60px] 
-						text-white bg-primary cursor-pointer text-sm font-semibold font-proxima-nova
-						hover:bg-primary/80 hover:text-white transition-colors duration-200"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-md 
+						text-primary-foreground bg-primary cursor-pointer text-sm font-semibold font-proxima-nova
+						hover:bg-primary/80 transition-colors duration-200"
         >
           <RotateCcw className="size-4" />
           Try Again

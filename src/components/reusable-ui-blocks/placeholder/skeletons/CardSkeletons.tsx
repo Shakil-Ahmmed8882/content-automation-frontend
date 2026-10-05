@@ -2,7 +2,7 @@ import { BaseSkeleton } from "./BaseSkeleton";
 
 export const CardSkeletonV2 = () => {
   return (
-    <div className="w-full rounded-lg overflow-hidden  bg-white">
+    <div className="w-full rounded-lg overflow-hidden  bg-card">
       {/* Image skeleton */}
       <BaseSkeleton className="w-full h-40" />
 
