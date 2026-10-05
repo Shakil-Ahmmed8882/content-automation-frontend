@@ -140,7 +140,7 @@ export function ExecutionDetailPage({ executionId }: { executionId: string }) {
   const showSlowNotice = isActive && activeAge > 300_000;
 
   return (
-    <main className="space-y-6" aria-labelledby="execution-title">
+    <div className="space-y-6" aria-labelledby="execution-title">
       <section className="rounded-lg border border-border bg-card p-6 shadow-card">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="min-w-0">
@@ -341,6 +341,6 @@ export function ExecutionDetailPage({ executionId }: { executionId: string }) {
       >
         Back to executions
       </Link>
-    </main>
+    </div>
   );
 }

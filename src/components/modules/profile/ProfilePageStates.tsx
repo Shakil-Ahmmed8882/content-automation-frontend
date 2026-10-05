@@ -9,7 +9,7 @@ import { ProfileAlert } from "./ProfileAlert";
 
 export function ProfileLoadingSkeleton() {
   return (
-    <main className="mx-auto w-full max-w-3xl space-y-6" aria-busy="true">
+    <div className="mx-auto w-full max-w-3xl space-y-6" aria-busy="true">
       <header className="space-y-3">
         <BaseSkeleton className="h-4 w-24" />
         <BaseSkeleton className="h-10 w-48" />
@@ -28,7 +28,7 @@ export function ProfileLoadingSkeleton() {
           </div>
         </section>
       ))}
-    </main>
+    </div>
   );
 }
 
@@ -43,7 +43,7 @@ export function ProfileErrorState({
 }) {
   const cooldown = useAuthCooldown();
   return (
-    <main className="mx-auto flex min-h-96 w-full max-w-3xl items-center">
+    <div className="mx-auto flex min-h-96 w-full max-w-3xl items-center">
       <div className="w-full rounded-lg bg-card p-6 shadow-card">
         <ProfileAlert>
           <p className="font-medium">Couldn't load your profile.</p>
@@ -63,7 +63,7 @@ export function ProfileErrorState({
           {cooldown > 0 ? `Try again in ${cooldown}s` : "Try again"}
         </Button>
       </div>
-    </main>
+    </div>
   );
 }
 
@@ -75,7 +75,7 @@ export function EmptyProfileState({
   pending: boolean;
 }) {
   return (
-    <main className="mx-auto w-full max-w-3xl space-y-4">
+    <div className="mx-auto w-full max-w-3xl space-y-4">
       <ProfileAlert variant="info">
         No profile data was returned. Try reloading the page.
       </ProfileAlert>
@@ -89,6 +89,6 @@ export function EmptyProfileState({
         <RotateCcw aria-hidden="true" />
         Retry
       </Button>
-    </main>
+    </div>
   );
 }

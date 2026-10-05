@@ -164,7 +164,7 @@ export default function ConnectionsPage() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+    <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <header className="space-y-3">
         <p className="eyebrow">Publishing setup</p>
         <div className="max-w-3xl space-y-2">
@@ -222,6 +222,6 @@ export default function ConnectionsPage() {
         onClose={closeQueryState}
         onRestart={() => connect("facebook")}
       />
-    </main>
+    </div>
   );
 }

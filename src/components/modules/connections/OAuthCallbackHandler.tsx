@@ -75,7 +75,7 @@ export function OAuthCallbackHandler({ platform }: { platform: string }) {
   }, [callback, platform, router, searchParams]);
 
   return (
-    <main className="mx-auto flex min-h-96 w-full max-w-xl items-center justify-center px-4">
+    <div className="mx-auto flex min-h-96 w-full max-w-xl items-center justify-center px-4">
       <output
         aria-live="polite"
         className="block rounded-lg bg-card p-6 text-center shadow-card"
@@ -91,6 +91,6 @@ export function OAuthCallbackHandler({ platform }: { platform: string }) {
           Keep this page open while we confirm the provider response.
         </p>
       </output>
-    </main>
+    </div>
   );
 }

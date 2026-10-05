@@ -16,7 +16,7 @@ import { SessionCard } from "./SessionCard";
 
 function ProfileContent({ profile }: { profile: UserProfile }) {
   return (
-    <main className="mx-auto w-full max-w-3xl space-y-6">
+    <div className="mx-auto w-full max-w-3xl space-y-6">
       <header className="min-w-0">
         <p className="eyebrow mb-3">Account hub</p>
         <h1 className="break-words text-display-lg tracking-[-0.04em]">
@@ -32,7 +32,7 @@ function ProfileContent({ profile }: { profile: UserProfile }) {
       <ChangePasswordCard profile={profile} />
       <SessionCard />
       <DangerZone />
-    </main>
+    </div>
   );
 }
 

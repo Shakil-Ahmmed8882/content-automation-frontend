@@ -15,8 +15,16 @@ export const routes = {
   executionDetail: (id: string) => `/executions/${id}`,
   payment: "/payment",
   paymentHistory: "/payment/history",
+  paymentHistoryDetail: (id: string) => `/payment/history/${id}`,
+  paymentSuccess: "/payment/success",
+  paymentFailure: "/payment/failure",
   upcomingFeatures: "/upcoming-features",
+  upcomingFeatureDetail: (slug: string) => `/upcoming-features/${slug}`,
+  admin: "/admin",
   adminPlatforms: "/admin/platforms",
+  adminUsers: "/admin/users",
+  adminAuditLogs: "/admin/audit-logs",
+  adminUpcomingFeatures: "/admin/upcoming-features",
 } as const;
 
 export function safeNext(value: string | null) {
