@@ -182,6 +182,17 @@ the API (the OTP is returned in the response because `EXPOSE_OTP_IN_RESPONSE=tru
   `CardSkeletonV2` has `bg-white` — both unreadable on dark; `MultipageModal` / `DeleteConfirmModal` are
   light panels (admin overrides locally); `DeleteConfirmModal` z-index sits below drawers.
 
+### Session 2 — extra browser verification (demo account)
+
+- Composer: empty submit shows "Content is required"; save draft → `POST /posts` 201 → post detail with the
+  publish panel (expired platforms flagged); delete via confirm modal → `DELETE /posts/:id` 200 → dashboard.
+- Execution detail: workflow graph, failure reason, per-platform Retry → `POST /publications/:id/retry` 202,
+  ends FAILED again (expired token — expected). Note: "Retry count" still read 0 after the retry; check
+  whether the backend increments it or the UI needs a refetch.
+- 375px: `/dashboard /create /connections /executions /profile /payment /payment/history /upcoming-features`
+  have no horizontal overflow.
+- Not yet clicked through: profile edit/avatar/change-password/delete, connections disconnect + Page picker.
+
 ## Blockers (updated)
 
 - B-01, B-02 — unchanged (live OAuth / live publishing; need provider consoles + a human consent click).
