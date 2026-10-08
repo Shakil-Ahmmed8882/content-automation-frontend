@@ -123,7 +123,7 @@ export function DrawerShell(props: Props) {
                 centerTitle && "items-center pl-16 text-center",
               )}
             >
-              <h2 className="min-w-0 font-proxima-nova text-2xl leading-[1.4] font-bold tracking-[-0.24px] text-foreground">
+              <h2 className="min-w-0 font-proxima-nova text-2xl leading-[1.4] font-semibold tracking-[-0.04em] text-foreground">
                 {title}
               </h2>
               {subtitle ? (

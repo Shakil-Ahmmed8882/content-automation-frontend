@@ -41,7 +41,7 @@ export function ModalWrapper({ open, setOpen, children }: Props) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed top-0 left-0 bottom-0 w-[100vw] z-[99] overflow-y-scroll bg-black/40 flex flex-col items-center"
+          className="fixed top-0 left-0 bottom-0 w-[100vw] z-[99] overflow-y-scroll bg-background/80 backdrop-blur-sm flex flex-col items-center"
           onClick={() => setOpen(false)}
         >
           {/* Content Wrapper:
@@ -54,7 +54,9 @@ export function ModalWrapper({ open, setOpen, children }: Props) {
               exit={{ opacity: 0, scale: 0.98, y: 10 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
               /* pointer-events-auto allows interaction with the modal itself */
-              className="relative w-full max-w-[610px] rounded-2xl bg-white shadow-2xl pointer-events-auto my-auto"
+              role="dialog"
+              aria-modal="true"
+              className="relative w-full max-w-[610px] rounded-lg border border-border bg-card text-card-foreground shadow-modal pointer-events-auto my-auto"
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
             >
               {children}

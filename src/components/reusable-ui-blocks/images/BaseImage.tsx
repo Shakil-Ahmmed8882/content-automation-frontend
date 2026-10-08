@@ -24,12 +24,12 @@ export const BaseImage = (props: BaseImageProps) => {
   const isFallback = hasError || !src;
 
   return (
-    <div className={`relative overflow-hidden ${className}`}>
+    <div className={cn("relative overflow-hidden", className)}>
       {/* ── Loader ── */}
       <ShowIf condition={isLoading}>
         <div
-          className="absolute inset-0 animate-pulse skeletonAnimation 
-                bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100"
+          className="absolute inset-0 animate-pulse skeletonAnimation
+                bg-gradient-to-r from-muted via-accent to-muted"
         />
       </ShowIf>
 
@@ -48,12 +48,15 @@ export const BaseImage = (props: BaseImageProps) => {
 				   `imgClass="object-contain"` still rendered a CROPPED image instead of
 				   the whole one. cn()'s tailwind-merge drops the loser outright. */
         className={cn(
-          isFallback ? "object-contain bg-gray-50 p-6" : "object-cover",
+          isFallback ? "object-contain bg-muted p-6" : "object-cover",
           hasError ? "opacity-40" : "opacity-100",
           imgClass,
         )}
         onError={() => setHasError(true)}
-        onLoadingComplete={() => setIsLoading(false)}
+        onLoad={(event) => {
+          setIsLoading(false);
+          rest.onLoad?.(event);
+        }}
       />
     </div>
   );

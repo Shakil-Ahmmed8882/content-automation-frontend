@@ -105,7 +105,7 @@ const OverflowChip = ({
   const chip = (
     <div
       className={cn(
-        "relative inline-flex items-center justify-center overflow-hidden rounded-full bg-[#FEF4F6] font-proxima-nova font-medium text-[#FF124B] ring-2 ring-white shrink-0 select-none",
+        "relative inline-flex items-center justify-center overflow-hidden rounded-full bg-secondary font-medium text-secondary-foreground ring-2 ring-card shrink-0 select-none",
         SIZE_TO_CHIP[size],
         overlap,
         className,

@@ -60,7 +60,7 @@ type RootProps = {
   width?: DrawerSize;
   /**
    * Backdrop style. Default "dim" — the same flat dark overlay the
-   * MultipageModal uses (bg-black/40, no blur). Use "blur" for a frosted
+   * MultipageModal uses (bg-background/80). Use "blur" for a frosted
    * backdrop, or pass a className string for full control.
    */
   overlay?: "dim" | "blur" | string;

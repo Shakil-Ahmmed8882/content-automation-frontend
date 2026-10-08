@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 //  Base CVA setup
 export const baseButtonVariants = cva(
-  "  inline-flex !leading-0 items-center justify-center rounded-md font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50  disabled:pointer-events-none cursor-pointer",
+  "  inline-flex !leading-0 items-center justify-center rounded-md font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50  disabled:pointer-events-none cursor-pointer",
   {
     variants: {
       size: {
@@ -23,16 +23,16 @@ export const baseButtonVariants = cva(
       intent: {
         default: "",
         primary:
-          "bg-primary text-white hover:bg-primary/90 active:bg-primary/80 font-normal",
+          "bg-primary text-primary-foreground hover:bg-primary-hover active:bg-primary/80 font-medium",
         "primary-light":
-          "bg-primary-light text-primary hover:bg-primary-light/90 active:bg-primary-light/80",
+          "bg-primary-subtle text-primary hover:bg-accent active:bg-accent/80",
         secondary: "",
         ghost:
-          "border border-primary text-primary bg-transparent hover:bg-primary-light/10 active:bg-primary-light/20",
+          "border border-primary text-primary bg-transparent hover:bg-primary-subtle active:bg-accent",
         bordered:
           " border border-primary text-primary hover:bg-primary/10 active:bg-primary/20",
         disabled:
-          "bg-gray-200  text-gray-500 cursor-not-allowed hover:bg-gray-200 active:bg-gray-200",
+          "bg-muted text-muted-foreground cursor-not-allowed hover:bg-muted active:bg-muted",
       },
       fullWidth: {
         true: "w-full",

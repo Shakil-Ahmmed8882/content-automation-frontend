@@ -11,7 +11,7 @@ type ToggleIconButtonProps = Omit<
   icon: LucideIcon;
   /** className applied to the icon when active. Default: "fill-primary text-primary" */
   activeClassName?: string;
-  /** className applied to the icon when inactive. Default: "text-[#a0a0a0]" */
+  /** className applied to the icon when inactive. Default: "text-muted-foreground" */
   inactiveClassName?: string;
   /** className applied to the icon regardless of state. Default: "size-4" */
   iconClassName?: string;
@@ -30,7 +30,7 @@ export function ToggleIconButton({
   onToggle,
   icon: Icon,
   activeClassName = "fill-primary text-primary",
-  inactiveClassName = "text-[#a0a0a0]",
+  inactiveClassName = "text-muted-foreground",
   iconClassName = "size-4",
   activeContainerClassName = "",
   stopPropagation = true,
@@ -51,7 +51,7 @@ export function ToggleIconButton({
         onToggle();
       }}
       className={cn(
-        "h-auto w-auto p-2 transition-colors hover:bg-[#f5f5f5]",
+        "h-auto w-auto p-2 transition-colors hover:bg-accent",
         className,
         active && activeContainerClassName,
       )}

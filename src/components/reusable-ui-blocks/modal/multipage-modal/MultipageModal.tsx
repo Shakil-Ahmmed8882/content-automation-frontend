@@ -102,7 +102,7 @@ function Root(props: RootProps) {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="fixed inset-0 z-[99999] bg-black/40"
+                    className="fixed inset-0 z-[99999] bg-background/80 backdrop-blur-sm"
                     aria-hidden="true"
                   />
                 )}
@@ -129,7 +129,9 @@ function Root(props: RootProps) {
                           animate="center"
                           exit="exit"
                           tabIndex={-1}
-                          className={`${className} relative w-full rounded-2xl p-3 md:py-9 md:px-8  bg-white shadow-2xl pointer-events-auto my-auto outline-none ${activePage.props.maxWidth ?? "max-w-[750px]"}`}
+                          className={`${className} relative w-full rounded-lg border border-border bg-card p-5 text-card-foreground md:py-9 md:px-8 shadow-modal pointer-events-auto my-auto outline-none ${activePage.props.maxWidth ?? "max-w-[750px]"}`}
+                          role="dialog"
+                          aria-modal="true"
                           onClick={(e: React.MouseEvent) => e.stopPropagation()}
                         >
                           {/* Close button — shown by default; hidden if either the modal-level
@@ -140,7 +142,7 @@ function Root(props: RootProps) {
                                 type="button"
                                 onClick={close}
                                 aria-label="Close"
-                                className="absolute right-3 top-2.5 z-10 cursor-pointer text-secondary"
+                                className="absolute right-3 top-3 z-10 cursor-pointer rounded-full text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
                               >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
@@ -162,7 +164,7 @@ function Root(props: RootProps) {
                             <button
                               type="button"
                               onClick={goBack}
-                              className="!mb-3  z-10 flex items-center gap-1 rounded-full px-3 py-1 text-[12px] font-medium text-[#141414] bg-[#f5f5f5] hover:bg-[#f0f0f0] transition-colors cursor-pointer font-proxima-nova "
+                              className="!mb-3 z-10 flex cursor-pointer items-center gap-1 rounded-full bg-secondary px-3 py-1 text-[12px] font-medium text-secondary-foreground transition-colors outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
                               aria-label="Go back"
                             >
                               <ChevronLeft className="size-3.5" />{" "}

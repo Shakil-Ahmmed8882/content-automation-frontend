@@ -15,13 +15,22 @@ export function CloseIcon({
       height={height}
       viewBox="0 0 72 72"
       fill="none"
+      aria-hidden="true"
     >
-      <circle cx="36" cy="36" r="30" stroke="#FF124B" strokeWidth="4" />
+      <circle
+        cx="36"
+        cy="36"
+        r="30"
+        stroke="currentColor"
+        strokeWidth="4"
+        className="text-destructive-text"
+      />
       <path
         d="M43.4999 28.5001L28.5 43.5M28.4999 28.5L43.4999 43.4999"
-        stroke="#FF124B"
+        stroke="currentColor"
         strokeWidth="4"
         strokeLinecap="round"
+        className="text-destructive-text"
       />
     </svg>
   );

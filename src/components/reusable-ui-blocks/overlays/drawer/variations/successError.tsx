@@ -53,10 +53,10 @@ export function SuccessDrawerContent(props: StatusDrawerProps = {}) {
       </div>
 
       <div className="flex w-full flex-col items-center gap-3 text-center">
-        <h2 className="font-proxima-nova text-[28px] leading-[1.2] font-bold text-[#141414]">
+        <h2 className="text-[28px] leading-[1.2] font-semibold tracking-[-0.04em] text-foreground">
           {title || "Successful"}
         </h2>
-        <p className="font-proxima-nova text-base leading-normal font-normal text-[#666]">
+        <p className="text-base leading-normal font-normal text-muted-foreground">
           {message || "You have successfully completed the action."}
         </p>
       </div>
@@ -92,10 +92,10 @@ export function ErrorDrawerContent(props: StatusDrawerProps = {}) {
       <CloseIcon />
 
       <div className="flex w-full flex-col items-center gap-3 text-center">
-        <h2 className="font-proxima-nova text-[28px] leading-[1.2] font-bold text-[#141414]">
+        <h2 className="text-[28px] leading-[1.2] font-semibold tracking-[-0.04em] text-foreground">
           {title || "Failed"}
         </h2>
-        <p className="font-proxima-nova text-base leading-normal font-normal text-[#666]">
+        <p className="text-base leading-normal font-normal text-muted-foreground">
           {message || "An error occurred while submitting your request."}
         </p>
       </div>

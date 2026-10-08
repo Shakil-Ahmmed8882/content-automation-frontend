@@ -58,7 +58,7 @@ export const BaseAvatar = (props: BaseAvatarProps) => {
       aria-label={name || alt}
     >
       {isLoading ? (
-        <span className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100" />
+        <span className="absolute inset-0 animate-pulse bg-gradient-to-r from-muted via-accent to-muted" />
       ) : showInitials ? (
         <span className="font-semibold">{initials}</span>
       ) : (

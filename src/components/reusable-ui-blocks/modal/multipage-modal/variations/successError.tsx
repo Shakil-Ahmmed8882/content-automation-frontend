@@ -58,10 +58,10 @@ export function SuccessModal(props: StatusModalProps = {}) {
       </div>
 
       <div className="flex flex-col gap-3 items-center text-center w-full">
-        <h2 className="font-bold text-[40px] leading-[1.2] text-[#141414] font-proxima-nova">
+        <h2 className="text-[32px] leading-[1.2] font-semibold tracking-[-0.04em] text-foreground">
           {title || "Successful"}
         </h2>
-        <p className="font-normal text-xl leading-normal text-[#666] font-proxima-nova">
+        <p className="text-base leading-normal font-normal text-muted-foreground">
           {message || "You have successfully completed the action."}
         </p>
       </div>
@@ -71,7 +71,7 @@ export function SuccessModal(props: StatusModalProps = {}) {
           intent={"primary-light"}
           onClick={close}
           size={"xl"}
-          className="w-full bg-[#fafafa] text-[#666] font-semibold py-4 text-base leading-normal rounded-full hover:bg-[#f0f0f0] transition-colors cursor-pointer font-proxima-nova"
+          className="w-full rounded-sm border border-border bg-transparent py-4 text-base leading-normal font-semibold text-foreground transition-colors hover:bg-accent"
         >
           Close
         </BaseButton>
@@ -107,10 +107,10 @@ export function ErrorModal(props: StatusModalProps = {}) {
       <CloseIcon />
 
       <div className="flex flex-col gap-3 items-center text-center w-full">
-        <h2 className="font-bold text-[40px] leading-[1.2] text-[#141414] font-proxima-nova">
+        <h2 className="text-[32px] leading-[1.2] font-semibold tracking-[-0.04em] text-foreground">
           {title || "Failed"}
         </h2>
-        <p className="font-normal text-xl leading-normal text-[#666] font-proxima-nova">
+        <p className="text-base leading-normal font-normal text-muted-foreground">
           {message || "An error occurred while submitting your request."}
         </p>
       </div>
@@ -120,7 +120,7 @@ export function ErrorModal(props: StatusModalProps = {}) {
           intent={"primary-light"}
           onClick={close}
           size={"xl"}
-          className="w-full bg-[#fafafa] text-[#666] font-semibold py-4 text-base leading-normal rounded-full hover:bg-[#f0f0f0] transition-colors cursor-pointer font-proxima-nova"
+          className="w-full rounded-sm border border-border bg-transparent py-4 text-base leading-normal font-semibold text-foreground transition-colors hover:bg-accent"
         >
           Close
         </BaseButton>

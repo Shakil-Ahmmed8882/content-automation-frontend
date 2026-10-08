@@ -1,7 +1,10 @@
 "use client";
 
 import { BaseButton } from "@/components/reusable-ui-blocks/buttons/BaseButton";
-import { GenericModalWrapper } from "@/components/reusable-ui-blocks/modal/GenericModalWrapper";
+import {
+  GenericModalWrapper,
+  useModalTitleId,
+} from "@/components/reusable-ui-blocks/modal/GenericModalWrapper";
 import Heading from "@/components/reusable-ui-blocks/typography/Heading";
 
 interface DeleteShiftScheduleProps {
@@ -13,6 +16,21 @@ interface DeleteShiftScheduleProps {
   onConfirm?: () => void;
   onClose: () => void;
   open?: boolean;
+}
+
+function ConfirmTitle({ children }: { children: string }) {
+  const titleId = useModalTitleId();
+  return (
+    <Heading
+      as="h2"
+      align="center"
+      weight="semibold"
+      id={titleId}
+      className="font-proxima-nova !text-[28px] !leading-[1.2] !tracking-[-0.04em] text-foreground"
+    >
+      {children}
+    </Heading>
+  );
 }
 
 export function DeleteConfirmModal(props: DeleteShiftScheduleProps) {
@@ -32,15 +50,8 @@ export function DeleteConfirmModal(props: DeleteShiftScheduleProps) {
         <div className="flex flex-col gap-6 justify-center w-full text-center">
           {/* Title + description */}
           <div className="flex flex-col gap-2 w-full">
-            <Heading
-              as="h2"
-              align="center"
-              weight="bold"
-              className="font-proxima-nova !text-[40px] !leading-[1.2] text-[#141414]"
-            >
-              {title}
-            </Heading>
-            <p className="font-proxima-nova text-base leading-6 text-[#666] text-center w-full">
+            <ConfirmTitle>{title}</ConfirmTitle>
+            <p className="font-proxima-nova text-base leading-6 text-muted-foreground text-center w-full">
               {message}
             </p>
           </div>
@@ -60,6 +71,7 @@ export function DeleteConfirmModal(props: DeleteShiftScheduleProps) {
               {confirmLabel}
             </BaseButton>
 
+            {/* Cancel takes focus first so Enter never confirms a destructive action by accident. */}
             <BaseButton
               intent="primary"
               fullWidth
@@ -67,6 +79,7 @@ export function DeleteConfirmModal(props: DeleteShiftScheduleProps) {
               size="lg"
               className="!py-4 font-proxima-nova font-semibold"
               onClick={onClose}
+              data-autofocus
             >
               {cancelLabel}
             </BaseButton>

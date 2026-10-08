@@ -9,9 +9,8 @@ import { useImageGallery } from "./useImageGallery";
 /*=========================================================
 // ImageGallery — thumbnail row + click-to-enlarge lightbox.
 //
-// The lightbox uses a LIGHT dim backdrop (bg-white/15, no black,
-// no blur) per design: the page stays faintly visible behind the
-// centered image instead of a solid black cover.
+// The lightbox uses a dimmed dark backdrop built from the page token, so the
+// page stays faintly visible behind the centered image.
 =========================================================*/
 export interface GalleryImage {
   src: string;
@@ -49,7 +48,7 @@ export function Lightbox(props: LightboxProps) {
 
   return (
     <div
-      className="fixed inset-0 z-[99999] flex items-center justify-center bg-[#141414]/35"
+      className="fixed inset-0 z-[99999] flex items-center justify-center bg-background/80 backdrop-blur-sm"
       onClick={onClose}
     >
       {/* Close */}
@@ -57,7 +56,7 @@ export function Lightbox(props: LightboxProps) {
         type="button"
         aria-label="Close gallery"
         onClick={onClose}
-        className="absolute right-4 top-4 z-10 flex size-9 cursor-pointer items-center justify-center rounded-full bg-[#141414]/70 text-white transition-colors hover:bg-[#141414]/90"
+        className="absolute right-4 top-4 z-10 flex size-9 cursor-pointer items-center justify-center rounded-full border border-border bg-card text-foreground transition-colors outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
       >
         <X className="size-5" />
       </button>
@@ -71,7 +70,7 @@ export function Lightbox(props: LightboxProps) {
             e.stopPropagation();
             onPrev();
           }}
-          className="absolute left-4 z-10 flex size-10 cursor-pointer items-center justify-center rounded-full bg-[#141414]/70 text-white transition-colors hover:bg-[#141414]/90"
+          className="absolute left-4 z-10 flex size-10 cursor-pointer items-center justify-center rounded-full border border-border bg-card text-foreground transition-colors outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <ChevronLeft className="size-6" />
         </button>
@@ -82,7 +81,7 @@ export function Lightbox(props: LightboxProps) {
         className="relative mx-16 w-full max-w-3xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="relative flex h-[80vh] w-full items-center justify-center overflow-hidden rounded-xl bg-white shadow-2xl">
+        <div className="relative flex h-[80vh] w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-card shadow-modal">
           <BaseImage
             src={images[currentIndex].src}
             alt={images[currentIndex].alt ?? `Image ${currentIndex + 1}`}
@@ -92,7 +91,7 @@ export function Lightbox(props: LightboxProps) {
         </div>
 
         <ShowIf condition={hasMultiple}>
-          <p className="mt-3 text-center text-sm font-medium text-[#141414]/70">
+          <p className="mt-3 text-center text-sm font-medium text-muted-foreground">
             {currentIndex + 1} / {images.length}
           </p>
         </ShowIf>
@@ -107,7 +106,7 @@ export function Lightbox(props: LightboxProps) {
             e.stopPropagation();
             onNext();
           }}
-          className="absolute right-4 z-10 flex size-10 cursor-pointer items-center justify-center rounded-full bg-[#141414]/70 text-white transition-colors hover:bg-[#141414]/90"
+          className="absolute right-4 z-10 flex size-10 cursor-pointer items-center justify-center rounded-full border border-border bg-card text-foreground transition-colors outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <ChevronRight className="size-6" />
         </button>
@@ -149,7 +148,7 @@ export function ImageGallery(props: ImageGalleryProps) {
             aria-label={`View image ${idx + 1}`}
             onClick={() => openLightbox(idx)}
             className={cn(
-              "relative shrink-0 cursor-pointer overflow-hidden rounded-[9px] bg-[#f0f0f0] transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff124b]",
+              "relative shrink-0 cursor-pointer overflow-hidden rounded-[9px] bg-muted transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               thumbnailClassName,
             )}
           >

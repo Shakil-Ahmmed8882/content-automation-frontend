@@ -38,9 +38,9 @@ export const ActiveInactiveAvatar = (props: ActiveInactiveAvatarProps) => {
         <span
           aria-label={isActive ? "active" : "inactive"}
           className={cn(
-            "absolute right-0 bottom-0 rounded-full ring-2 ring-white",
+            "absolute right-0 bottom-0 rounded-full ring-2 ring-card",
             DOT_SIZE[size],
-            isActive ? "bg-emerald-500" : "bg-gray-400",
+            isActive ? "bg-success" : "bg-mute",
           )}
         />
       )}
