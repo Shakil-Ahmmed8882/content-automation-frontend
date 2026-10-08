@@ -126,13 +126,13 @@ export function TargetPlatforms({
   const loadError = platforms.error ?? connections.error;
 
   return (
-    <fieldset className="space-y-3" disabled={disabled}>
-      <div className="space-y-1">
-        <legend className="text-sm font-medium">Publish to</legend>
-        <p className="text-xs text-muted-foreground">
-          Targets are chosen for publishing only. Saved posts stay immutable.
-        </p>
-      </div>
+    <fieldset className="space-y-4" disabled={disabled}>
+      <legend className="mb-1 w-full p-0 text-sm leading-5 font-medium">
+        Publish to
+      </legend>
+      <p className="text-xs leading-5 text-muted-foreground">
+        Targets are chosen for publishing only. Saved posts stay immutable.
+      </p>
       {loadError ? (
         <PostNotice tone="error">
           <p>{toApiError(loadError).userMessage}</p>
@@ -175,7 +175,7 @@ export function TargetPlatforms({
               </div>
             </div>
           ) : null}
-          <div className="space-y-2">
+          <div className="space-y-3">
             {targets.map((target) => {
               const inputId = `target-${target.key}`;
               const reasonId = `${inputId}-reason`;
@@ -183,7 +183,7 @@ export function TargetPlatforms({
               return (
                 <div
                   key={target.key}
-                  className={`rounded-lg border p-3 ${
+                  className={`rounded-lg border p-4 ${
                     connected
                       ? "border-border bg-card"
                       : "border-border bg-muted/40"
@@ -192,6 +192,7 @@ export function TargetPlatforms({
                   <div className="flex items-start gap-3">
                     <Checkbox
                       id={inputId}
+                      className="mt-0.5"
                       checked={value.includes(target.key)}
                       disabled={!connected || disabled}
                       aria-describedby={reasonId}
@@ -202,7 +203,11 @@ export function TargetPlatforms({
                     <div className="min-w-0 flex-1">
                       <label
                         htmlFor={inputId}
-                        className="block cursor-pointer text-sm font-medium"
+                        className={`block text-sm leading-5 font-medium ${
+                          connected && !disabled
+                            ? "cursor-pointer"
+                            : "cursor-not-allowed"
+                        }`}
                       >
                         {target.name}
                       </label>
@@ -237,7 +242,7 @@ export function TargetPlatforms({
             })}
           </div>
           {error ? (
-            <p role="alert" className="text-xs text-destructive">
+            <p role="alert" className="text-xs leading-5 text-destructive-text">
               {error}
             </p>
           ) : null}

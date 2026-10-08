@@ -4,6 +4,7 @@ import { PenSquare, Search } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { CenteredError } from "@/components/modules/shared/CenteredError";
 import { useDebounce } from "@/components/reusable-ui-blocks/hooks/useDebounce";
 import { DeleteConfirmModal } from "@/components/reusable-ui-blocks/modal/veriations/DeleteConfirmModal";
 import { InfiniteScrollProvider } from "@/components/reusable-ui-blocks/pagination/infinite-scroll/provider/InfiniteScrollProvider";
@@ -128,22 +129,20 @@ export function PostsList() {
       {query.isPending ? (
         <CardSkeletonV2List />
       ) : hasInitialError ? (
-        <PostNotice tone="error">
-          <p>Could not load your posts.</p>
-          <p className="mt-1 text-muted-foreground">
-            {toApiError(query.error).userMessage}
-          </p>
+        <CenteredError
+          compact
+          title="Could not load your posts."
+          message={toApiError(query.error).userMessage}
+        >
           <Button
             type="button"
             variant="outline"
-            size="sm"
-            className="mt-3"
             onClick={() => void query.refetch()}
             disabled={query.isFetching}
           >
             Try again
           </Button>
-        </PostNotice>
+        </CenteredError>
       ) : (
         <NoResultFoundWrapper
           data={posts}

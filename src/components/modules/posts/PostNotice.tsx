@@ -21,7 +21,7 @@ export function PostNotice({
       <Icon
         aria-hidden="true"
         className={`mt-0.5 size-4 shrink-0 ${
-          tone === "error" ? "text-destructive" : "text-muted-foreground"
+          tone === "error" ? "text-destructive-text" : "text-muted-foreground"
         }`}
       />
       <div className="min-w-0">{children}</div>

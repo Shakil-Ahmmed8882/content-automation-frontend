@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { PublishPanel } from "@/components/modules/executions/PublishPanel";
+import { CenteredError } from "@/components/modules/shared/CenteredError";
 import { BaseImage } from "@/components/reusable-ui-blocks/images/BaseImage";
 import { DeleteConfirmModal } from "@/components/reusable-ui-blocks/modal/veriations/DeleteConfirmModal";
 import { BaseSkeleton } from "@/components/reusable-ui-blocks/placeholder/skeletons/BaseSkeleton";
@@ -68,19 +69,19 @@ export function PostDetailView({ id }: { id: string }) {
       );
     }
     return (
-      <PostNotice tone="error">
-        <p>{failure.userMessage}</p>
+      <CenteredError
+        title="Couldn't load this post."
+        message={failure.userMessage}
+      >
         <Button
           type="button"
           variant="outline"
-          size="sm"
-          className="mt-3"
           onClick={() => void query.refetch()}
           disabled={query.isFetching}
         >
           Try again
         </Button>
-      </PostNotice>
+      </CenteredError>
     );
   }
 

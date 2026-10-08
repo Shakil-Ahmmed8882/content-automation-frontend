@@ -129,7 +129,7 @@ function ComposerStateBridge({
   }, [content, onPreviewChange, title]);
 
   return (
-    <p className="text-xs text-muted-foreground">
+    <p className="-mt-3 text-right text-xs leading-5 text-muted-foreground">
       <span aria-hidden="true">{contentLength} characters</span>
       <span className="sr-only" aria-live="polite">
         {announcedCount} characters entered
@@ -280,14 +280,9 @@ export function ComposerForm() {
           schema={createPostSchema}
           initialValues={initialValues}
           onSubmit={submit}
-          className="space-y-6"
+          className="space-y-8"
         >
-          <ComposerStateBridge
-            imageFile={imageFile}
-            onDirtyChange={handleDirtyChange}
-            onPreviewChange={handlePreviewChange}
-          />
-          <fieldset disabled={mutation.isPending} className="space-y-4">
+          <fieldset disabled={mutation.isPending} className="space-y-6">
             <TextField
               name="title"
               label="Title"
@@ -302,11 +297,16 @@ export function ComposerForm() {
               rows={8}
               inputClassName="min-h-44"
             />
+            <ComposerStateBridge
+              imageFile={imageFile}
+              onDirtyChange={handleDirtyChange}
+              onPreviewChange={handlePreviewChange}
+            />
           </fieldset>
-          <div className="space-y-2">
+          <div className="space-y-3">
             <div>
-              <p className="text-sm font-medium">Image</p>
-              <p className="mt-1 text-xs text-muted-foreground">
+              <p className="text-sm leading-5 font-medium">Image</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">
                 Optional. One image, image type only, up to 5 MB after
                 preparation.
               </p>
@@ -326,7 +326,10 @@ export function ComposerForm() {
               }}
             />
             {imageError ? (
-              <p role="alert" className="text-xs text-destructive">
+              <p
+                role="alert"
+                className="text-xs leading-5 text-destructive-text"
+              >
                 {imageError}
               </p>
             ) : null}
@@ -353,8 +356,8 @@ export function ComposerForm() {
             Posts cannot be edited after saving. You can delete a saved post and
             create a new one if the content needs to change.
           </PostNotice>
-          <div className="flex flex-col-reverse gap-3 border-t border-border pt-4 sm:flex-row sm:justify-end">
-            <Button asChild variant="ghost">
+          <div className="flex flex-col-reverse gap-3 border-t border-border pt-6 sm:flex-row sm:justify-end">
+            <Button asChild variant="ghost" size="xl">
               <Link href={routes.dashboard}>Cancel</Link>
             </Button>
             <SubmitButton
@@ -370,6 +373,7 @@ export function ComposerForm() {
             />
             <Button
               type="submit"
+              size="xl"
               disabled={
                 imageRejected ||
                 !online ||
