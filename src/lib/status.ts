@@ -36,7 +36,7 @@ export const executionStatus: Record<
   },
   FAILED: {
     label: "Failed",
-    tone: "bg-destructive/10 text-destructive",
+    tone: "bg-destructive/10 text-destructive-text",
     icon: AlertCircle,
   },
 };

@@ -15,7 +15,7 @@
   --foreground: #ededed;
   --card: #111111;
   --card-foreground: #ededed;
-  --popover: #111111;
+  --popover: #171717; /* one step above card (#111) so menus read as a raised layer, not a hole */
   --popover-foreground: #ededed;
   --canvas-soft: #171717; /* design-system `primary` ink, used as a raised band */
 
@@ -29,21 +29,31 @@
   --muted: #1a1a1a;
   --muted-foreground: #a1a1a1; /* hairline-strong / body on dark */
   --mute: #888888;
-  --accent: #1f1f1f;
+  --accent: #262626; /* hover / selected rows: must stay visible on the popover (#171717) and card (#111) surfaces */
   --accent-foreground: #ededed;
 
   /* semantic */
   --destructive: #ee0000;
+  --destructive-foreground: #ffffff; /* label on the red fill: 4.5:1 */
+  --destructive-text: #ff6166; /* the red as TEXT on dark surfaces: 6.1:1 (the fill alone is only 4.2:1) */
   --warning: #f5a623;
   --success: #50e3c2; /* cyan from the brand palette */
   --link: #3291ff; /* #0070f3 lifted for contrast on near-black */
   --link-bg-soft: rgb(0 112 243 / 0.16);
 
+  /*
+   * Third-party brand colours. The ONE sanctioned exception to "no new accent
+   * colour": a connected platform shows its own logo colour (PlatformCard), and
+   * only there. Values are the platforms' published brand blues.
+   */
+  --brand-linkedin: #0a66c2;
+  --brand-facebook: #1877f2;
+
   /* lines & focus */
   --border: rgb(255 255 255 / 0.1);
   --border-extra-light: rgb(255 255 255 / 0.06);
   --input: rgb(255 255 255 / 0.14);
-  --ring: #a1a1a1;
+  --ring: #d4d4d4; /* focus ring: at /50 over card it stays >= 3:1 (non-text contrast) */
   --selector: rgb(255 255 255 / 0.08);
 
   /* brand gradient pairs (hero-scale decoration only) */
@@ -90,10 +100,14 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-text: var(--destructive-text);
   --color-warning: var(--warning);
   --color-success: var(--success);
   --color-link: var(--link);
   --color-link-bg-soft: var(--link-bg-soft);
+  --color-brand-linkedin: var(--brand-linkedin);
+  --color-brand-facebook: var(--brand-facebook);
   --color-border: var(--border);
   --color-border-extra-light: var(--border-extra-light);
   --color-input: var(--input);
@@ -157,6 +171,53 @@
   h2,
   h3 {
     @apply font-semibold;
+  }
+
+  /*
+   * Tailwind v4 preflight no longer gives buttons a pointer, so every
+   * interactive element gets it here, once, instead of per component.
+   * It lives in the base layer on purpose: an explicit `cursor-*` utility on a
+   * component (utilities layer) still wins, so nothing needs to be unpicked.
+   */
+  :where(
+      button,
+      summary,
+      select,
+      label[for],
+      a[href],
+      input[type="checkbox"],
+      input[type="radio"],
+      input[type="file"],
+      input[type="range"],
+      input[type="submit"],
+      input[type="button"],
+      input[type="reset"],
+      [role="button"],
+      [role="link"],
+      [role="menuitem"],
+      [role="menuitemcheckbox"],
+      [role="menuitemradio"],
+      [role="option"],
+      [role="tab"],
+      [role="switch"],
+      [role="checkbox"],
+      [role="radio"],
+      [role="combobox"],
+      [type="submit"]
+    ) {
+    cursor: pointer;
+  }
+
+  input[type="file"]::file-selector-button {
+    cursor: pointer;
+  }
+
+  /* Disabled wins over the rule above: a control that cannot be used must not look clickable. */
+  :where(button, input, select, textarea):disabled,
+  [aria-disabled="true"],
+  [data-disabled],
+  :where(button, input, select, textarea):disabled + label[for] {
+    cursor: not-allowed;
   }
 }
 
