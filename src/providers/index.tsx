@@ -10,7 +10,18 @@ export default function Providers({ children }: { children: ReactNode }) {
     <QueryProvider>
       <SessionProvider />
       {children}
-      <Toaster theme="dark" position="top-right" />
+      <Toaster
+        theme="dark"
+        position="top-right"
+        style={
+          {
+            "--normal-bg": "var(--popover)",
+            "--normal-text": "var(--popover-foreground)",
+            "--normal-border": "var(--border)",
+            "--border-radius": "var(--radius)",
+          } as React.CSSProperties
+        }
+      />
     </QueryProvider>
   );
 }

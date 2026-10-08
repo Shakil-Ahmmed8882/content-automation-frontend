@@ -16,6 +16,19 @@ export const metadata: Metadata = {
   },
   description:
     "Write a post once and publish it to LinkedIn and Facebook in one click. Track every publish, retry what failed.",
+  openGraph: {
+    type: "website",
+    siteName: "Content Automation",
+    title: "Content Automation — write once, publish everywhere",
+    description:
+      "Write a post once and publish it to LinkedIn and Facebook in one click. Track every publish, retry what failed.",
+  },
+  twitter: {
+    card: "summary",
+    title: "Content Automation — write once, publish everywhere",
+    description:
+      "Write a post once and publish it to LinkedIn and Facebook in one click. Track every publish, retry what failed.",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -23,8 +36,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`dark ${geistSans.variable} ${geistMono.variable} h-full`}
+      suppressHydrationWarning
     >
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-full flex-col" suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>
