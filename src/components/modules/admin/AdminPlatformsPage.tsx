@@ -95,10 +95,7 @@ export function AdminPlatformsPage() {
         <NoResultFoundWrapper
           data={query.data}
           fallback={
-            <AdminEmptyState
-              title="No platforms yet"
-              action={newButton}
-            />
+            <AdminEmptyState title="No platforms yet" action={newButton} />
           }
         >
           <AdminTableShell label="Platforms">

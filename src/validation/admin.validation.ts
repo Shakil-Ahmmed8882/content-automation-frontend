@@ -1,9 +1,10 @@
 import { z } from "zod";
 
-const integerText = z
-  .string()
-  .trim()
-  .regex(/^-?\d+$/, "Order must be a whole number");
+// The shared TextField converts `type="number"` input to a number (undefined when
+// cleared), so the schema validates a real integer, not text.
+const sortOrder = z
+  .number({ error: "Order must be a whole number" })
+  .int("Order must be a whole number");
 
 export const platformCreateSchema = z.object({
   key: z
@@ -16,7 +17,7 @@ export const platformCreateSchema = z.object({
     ),
   name: z.string().trim().min(1, "Name is required"),
   status: z.enum(["LIVE", "COMING_SOON"]),
-  sortOrder: integerText,
+  sortOrder,
   isActive: z.boolean(),
 });
 
@@ -35,7 +36,7 @@ export const featureSchema = z.object({
   shortDescription: z.string().trim().min(1, "Short description is required"),
   description: z.string().trim().min(1, "Description is required"),
   status: z.enum(["COMING_SOON", "IN_DEVELOPMENT", "PLANNED"]),
-  sortOrder: integerText,
+  sortOrder,
   isPremiumVisible: z.boolean(),
 });
 

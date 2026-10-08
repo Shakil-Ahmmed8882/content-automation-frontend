@@ -58,7 +58,13 @@ function confirmCopy(confirm: Confirm, name: string) {
   }
 }
 
-function DetailRow({ label, children }: { label: string; children: React.ReactNode }) {
+function DetailRow({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex items-center justify-between gap-4 border-b border-border-extra-light py-3 text-sm">
       <dt className="text-muted-foreground">{label}</dt>
@@ -123,16 +129,20 @@ function UserDetailBody({
             {user.status === "ACTIVE" ? "Active" : "Blocked"}
           </AdminBadge>
         </DetailRow>
-        <DetailRow label="Premium">
-          {user.isPremium ? "Yes" : "No"}
-        </DetailRow>
+        <DetailRow label="Premium">{user.isPremium ? "Yes" : "No"}</DetailRow>
         <DetailRow label="Premium since">
           {formatAdminDateTime(user.premiumSince)}
         </DetailRow>
         <DetailRow label="Deleted">
-          {user.isDeleted ? <AdminBadge tone="danger">Deleted</AdminBadge> : "No"}
+          {user.isDeleted ? (
+            <AdminBadge tone="danger">Deleted</AdminBadge>
+          ) : (
+            "No"
+          )}
         </DetailRow>
-        <DetailRow label="Joined">{formatAdminDateTime(user.createdAt)}</DetailRow>
+        <DetailRow label="Joined">
+          {formatAdminDateTime(user.createdAt)}
+        </DetailRow>
         <DetailRow label="User ID">
           <span className="font-mono text-xs break-all">{user.id}</span>
         </DetailRow>
@@ -153,7 +163,9 @@ function UserDetailBody({
             disabled={busy || locked || isSelf}
             title={isSelf ? "You can't change your own status." : undefined}
             onClick={() =>
-              setConfirm({ kind: user.status === "ACTIVE" ? "block" : "unblock" })
+              setConfirm({
+                kind: user.status === "ACTIVE" ? "block" : "unblock",
+              })
             }
           >
             {user.status === "ACTIVE" ? "Block user" : "Unblock user"}
@@ -227,7 +239,11 @@ function UserDetailBody({
             >
               Cancel
             </Button>
-            <Button type="button" disabled={busy} onClick={() => void run(confirm)}>
+            <Button
+              type="button"
+              disabled={busy}
+              onClick={() => void run(confirm)}
+            >
               {busy ? "Working..." : copy.label}
             </Button>
           </div>

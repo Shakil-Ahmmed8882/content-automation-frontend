@@ -34,7 +34,10 @@ const statusLabel: Record<FeatureStatus, string> = {
   PLANNED: "Planned",
 };
 
-type Editing = { mode: "create" } | { mode: "edit"; feature: AdminFeature } | null;
+type Editing =
+  | { mode: "create" }
+  | { mode: "edit"; feature: AdminFeature }
+  | null;
 
 export function AdminFeaturesPage() {
   const query = useAdminFeatures();
@@ -96,7 +99,9 @@ export function AdminFeaturesPage() {
       ) : (
         <NoResultFoundWrapper
           data={query.data}
-          fallback={<AdminEmptyState title="No features yet" action={newButton} />}
+          fallback={
+            <AdminEmptyState title="No features yet" action={newButton} />
+          }
         >
           <AdminTableShell label="Upcoming features">
             <thead>

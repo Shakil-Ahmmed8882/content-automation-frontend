@@ -19,10 +19,10 @@ function PagerBridge({ page, meta, onPageChange }: PagerProps) {
   const urlPage = useRef(page);
 
   // The URL is the source of truth: follow it when it changes.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: only react to URL page changes
   useEffect(() => {
     urlPage.current = page;
     if (currentPage !== page) goToPage(page);
-    // biome-ignore lint/correctness/useExhaustiveDependencies: only react to URL page changes
   }, [page]);
 
   // A click in <Pagination> moves currentPage away from the URL page.

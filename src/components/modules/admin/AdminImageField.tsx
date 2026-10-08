@@ -24,8 +24,8 @@ export function AdminImageField({
   onRejectedChange?: (hasRejected: boolean) => void;
 }) {
   return (
-    <div className="space-y-2">
-      <p className="text-sm font-medium">{label}</p>
+    <div className="space-y-3">
+      <p className="text-sm leading-5 font-medium">{label}</p>
       {currentUrl && !file ? (
         <div className="flex items-center gap-3">
           <BaseImage

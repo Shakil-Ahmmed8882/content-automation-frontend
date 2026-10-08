@@ -3,8 +3,8 @@
 import { Crown, Search } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { BaseAvatar } from "@/components/reusable-ui-blocks/images/variations/avatar/BaseAvatar";
 import { useDebounce } from "@/components/reusable-ui-blocks/hooks/useDebounce";
+import { BaseAvatar } from "@/components/reusable-ui-blocks/images/variations/avatar/BaseAvatar";
 import { Drawer } from "@/components/reusable-ui-blocks/overlays/drawer";
 import { NoResultFoundWrapper } from "@/components/reusable-ui-blocks/placeholder/no-results-found-wrapper/NoResultFoundWrapper";
 import { Button } from "@/components/ui/button";
@@ -69,10 +69,10 @@ export function AdminUsersPage() {
   );
 
   // Debounced typing -> URL, resetting to page 1.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: react to the debounced term only
   useEffect(() => {
     if (debounced === urlSearch) return;
     updateUrl({ search: debounced, page: 1 });
-    // biome-ignore lint/correctness/useExhaustiveDependencies: react to the debounced term only
   }, [debounced]);
 
   const viewer = session.data;
@@ -116,105 +116,103 @@ export function AdminUsersPage() {
           retrying={query.isFetching}
         />
       ) : (
-        <>
-          <NoResultFoundWrapper
-            data={rows}
-            fallback={
-              <AdminEmptyState
-                title={
-                  urlSearch ? `No users match "${urlSearch}"` : "No users yet"
-                }
-                action={
-                  urlSearch ? (
+        <NoResultFoundWrapper
+          data={rows}
+          fallback={
+            <AdminEmptyState
+              title={
+                urlSearch ? `No users match "${urlSearch}"` : "No users yet"
+              }
+              action={
+                urlSearch ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setSearchInput("");
+                      updateUrl({ search: "", page: 1 });
+                    }}
+                  >
+                    Clear search
+                  </Button>
+                ) : undefined
+              }
+            />
+          }
+        >
+          <AdminTableShell label="Users">
+            <thead>
+              <tr>
+                <th className={thClass}>User</th>
+                <th className={thClass}>Role</th>
+                <th className={thClass}>Status</th>
+                <th className={thClass}>Premium</th>
+                <th className={thClass}>Joined</th>
+                <th className={thClass}>
+                  <span className="sr-only">Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((user) => (
+                <tr key={user.id}>
+                  <td className={tdClass}>
+                    <div className="flex items-center gap-3">
+                      <BaseAvatar name={user.name} alt="" size="sm" />
+                      <div className="min-w-0">
+                        <p className="truncate font-medium">{user.name}</p>
+                        <p className="truncate text-xs text-muted-foreground">
+                          {user.email}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className={tdClass}>
+                    <AdminBadge tone="info">{user.role}</AdminBadge>
+                  </td>
+                  <td className={tdClass}>
+                    <div className="flex flex-wrap gap-1">
+                      <AdminBadge
+                        tone={user.status === "ACTIVE" ? "success" : "danger"}
+                      >
+                        {user.status === "ACTIVE" ? "Active" : "Blocked"}
+                      </AdminBadge>
+                      {user.isDeleted ? (
+                        <AdminBadge tone="danger">Deleted</AdminBadge>
+                      ) : null}
+                    </div>
+                  </td>
+                  <td className={tdClass}>
+                    {user.isPremium ? (
+                      <span className="inline-flex items-center gap-1 text-xs">
+                        <Crown aria-hidden="true" className="size-3.5" />
+                        Premium
+                      </span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">-</span>
+                    )}
+                  </td>
+                  <td className={tdClass}>{formatAdminDate(user.createdAt)}</td>
+                  <td className={`${tdClass} text-right`}>
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => {
-                        setSearchInput("");
-                        updateUrl({ search: "", page: 1 });
-                      }}
+                      size="sm"
+                      onClick={() => setSelected(user)}
                     >
-                      Clear search
+                      View
                     </Button>
-                  ) : undefined
-                }
-              />
-            }
-          >
-            <AdminTableShell label="Users">
-              <thead>
-                <tr>
-                  <th className={thClass}>User</th>
-                  <th className={thClass}>Role</th>
-                  <th className={thClass}>Status</th>
-                  <th className={thClass}>Premium</th>
-                  <th className={thClass}>Joined</th>
-                  <th className={thClass}>
-                    <span className="sr-only">Actions</span>
-                  </th>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {rows.map((user) => (
-                  <tr key={user.id}>
-                    <td className={tdClass}>
-                      <div className="flex items-center gap-3">
-                        <BaseAvatar name={user.name} alt="" size="sm" />
-                        <div className="min-w-0">
-                          <p className="truncate font-medium">{user.name}</p>
-                          <p className="truncate text-xs text-muted-foreground">
-                            {user.email}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className={tdClass}>
-                      <AdminBadge tone="info">{user.role}</AdminBadge>
-                    </td>
-                    <td className={tdClass}>
-                      <div className="flex flex-wrap gap-1">
-                        <AdminBadge
-                          tone={user.status === "ACTIVE" ? "success" : "danger"}
-                        >
-                          {user.status === "ACTIVE" ? "Active" : "Blocked"}
-                        </AdminBadge>
-                        {user.isDeleted ? (
-                          <AdminBadge tone="danger">Deleted</AdminBadge>
-                        ) : null}
-                      </div>
-                    </td>
-                    <td className={tdClass}>
-                      {user.isPremium ? (
-                        <span className="inline-flex items-center gap-1 text-xs">
-                          <Crown aria-hidden="true" className="size-3.5" />
-                          Premium
-                        </span>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">-</span>
-                      )}
-                    </td>
-                    <td className={tdClass}>{formatAdminDate(user.createdAt)}</td>
-                    <td className={`${tdClass} text-right`}>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setSelected(user)}
-                      >
-                        View
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </AdminTableShell>
-            <AdminPager
-              page={page}
-              meta={query.data?.meta}
-              onPageChange={(next) => updateUrl({ page: next })}
-            />
-          </NoResultFoundWrapper>
-        </>
+              ))}
+            </tbody>
+          </AdminTableShell>
+          <AdminPager
+            page={page}
+            meta={query.data?.meta}
+            onPageChange={(next) => updateUrl({ page: next })}
+          />
+        </NoResultFoundWrapper>
       )}
 
       <Drawer

@@ -64,10 +64,10 @@ function KnownValueFilter({
   const [text, setText] = useState(isKnown ? "" : value);
   const debouncedText = useDebounce(text.trim(), 300);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: react to typed text only
   useEffect(() => {
     if (!otherMode || debouncedText === value) return;
     onChange(debouncedText);
-    // biome-ignore lint/correctness/useExhaustiveDependencies: react to typed text only
   }, [debouncedText, otherMode]);
 
   // The URL cleared externally (Reset): leave other mode.
@@ -131,9 +131,9 @@ function ActorFilter({
   const [text, setText] = useState(value);
   const debounced = useDebounce(text.trim(), 300);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: react to typed text only
   useEffect(() => {
     if (debounced !== value) onChange(debounced);
-    // biome-ignore lint/correctness/useExhaustiveDependencies: react to typed text only
   }, [debounced]);
 
   useEffect(() => {
@@ -227,7 +227,10 @@ function AuditRow({
       </tr>
       {open ? (
         <tr id={detailId}>
-          <td colSpan={5} className="border-b border-border bg-muted/40 px-4 py-4">
+          <td
+            colSpan={5}
+            className="border-b border-border bg-muted/40 px-4 py-4"
+          >
             <dl className="grid gap-3 text-sm sm:grid-cols-2">
               <div>
                 <dt className="eyebrow">Entity ID</dt>
@@ -252,6 +255,7 @@ function AuditRow({
                     </span>
                   ) : (
                     <pre
+                      // biome-ignore lint/a11y/noNoninteractiveTabindex: a scrollable code block must be reachable by keyboard
                       tabIndex={0}
                       className="max-h-64 overflow-auto rounded-sm border border-border bg-background p-3 font-mono text-xs"
                     >

@@ -50,7 +50,7 @@ export function PlatformForm({
   async function submit(values: PlatformCreateValues) {
     if (pending) return;
     setFormError(null);
-    const sortOrder = Number(values.sortOrder);
+    const { sortOrder } = values;
     try {
       const saved = platform
         ? await update.mutateAsync({
@@ -100,13 +100,13 @@ export function PlatformForm({
         key: platform?.key ?? "",
         name: platform?.name ?? "",
         status: platform?.status ?? "COMING_SOON",
-        sortOrder: String(platform?.sortOrder ?? 0),
+        sortOrder: platform?.sortOrder ?? 0,
         isActive: platform?.isActive ?? true,
       }}
       mode="onTouched"
       onSubmit={submit}
     >
-      <fieldset disabled={pending} className="grid gap-4" aria-busy={pending}>
+      <fieldset disabled={pending} className="grid gap-6" aria-busy={pending}>
         <TextField<PlatformCreateValues>
           name="key"
           label="Key"
@@ -120,7 +120,7 @@ export function PlatformForm({
           }
         />
         <TextField<PlatformCreateValues> name="name" label="Name" required />
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2 sm:items-start">
           <SelectField<PlatformCreateValues>
             name="status"
             label="Status"
@@ -144,12 +144,12 @@ export function PlatformForm({
         />
       </fieldset>
       {formError ? (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="text-sm leading-5 text-destructive-text">
           {formError}
         </p>
       ) : null}
       <div className="flex justify-end gap-3">
-        <Button type="button" variant="outline" onClick={onClose}>
+        <Button type="button" variant="outline" size="xl" onClick={onClose}>
           Cancel
         </Button>
         <SubmitButton

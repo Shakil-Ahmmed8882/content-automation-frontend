@@ -58,7 +58,7 @@ export function FeatureForm({
       shortDescription: values.shortDescription,
       description: values.description,
       status: values.status,
-      sortOrder: Number(values.sortOrder),
+      sortOrder: values.sortOrder,
       isPremiumVisible: values.isPremiumVisible,
     };
     try {
@@ -98,13 +98,13 @@ export function FeatureForm({
         shortDescription: feature?.shortDescription ?? "",
         description: feature?.description ?? "",
         status: feature?.status ?? "COMING_SOON",
-        sortOrder: String(feature?.sortOrder ?? 0),
+        sortOrder: feature?.sortOrder ?? 0,
         isPremiumVisible: feature?.isPremiumVisible ?? true,
       }}
       mode="onTouched"
       onSubmit={submit}
     >
-      <fieldset disabled={pending} className="grid gap-4" aria-busy={pending}>
+      <fieldset disabled={pending} className="grid gap-6" aria-busy={pending}>
         <TextField<FeatureValues> name="title" label="Title" required />
         <TextField<FeatureValues>
           name="slug"
@@ -122,7 +122,7 @@ export function FeatureForm({
           label="Description"
           required
         />
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2 sm:items-start">
           <SelectField<FeatureValues>
             name="status"
             label="Status"
@@ -148,12 +148,12 @@ export function FeatureForm({
         />
       </fieldset>
       {formError ? (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="text-sm leading-5 text-destructive-text">
           {formError}
         </p>
       ) : null}
       <div className="flex justify-end gap-3">
-        <Button type="button" variant="outline" onClick={onClose}>
+        <Button type="button" variant="outline" size="xl" onClick={onClose}>
           Cancel
         </Button>
         <SubmitButton

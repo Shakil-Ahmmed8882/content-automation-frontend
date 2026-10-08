@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { CenteredError } from "@/components/modules/shared/CenteredError";
 import { BaseSkeleton } from "@/components/reusable-ui-blocks/placeholder/skeletons/BaseSkeleton";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -84,23 +85,11 @@ export function AdminErrorState({
   retrying?: boolean;
 }) {
   return (
-    <section
-      role="alert"
-      className="rounded-lg border border-border bg-card p-6 shadow-card"
-    >
-      <h2 className="text-display-sm tracking-[-0.04em]">
-        Something went wrong
-      </h2>
-      <p className="mt-2 text-sm text-muted-foreground">{message}</p>
-      <Button
-        type="button"
-        className="mt-5"
-        onClick={onRetry}
-        disabled={retrying}
-      >
+    <CenteredError message={message}>
+      <Button type="button" onClick={onRetry} disabled={retrying}>
         Retry
       </Button>
-    </section>
+    </CenteredError>
   );
 }
 
@@ -134,7 +123,10 @@ export function AdminTableShell({
   label: string;
 }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-border bg-card shadow-card">
+    // `relative` makes the wrapper the containing block for the table's `sr-only`
+    // (absolutely positioned) labels; without it they escape the scroll area and
+    // stretch the whole page on narrow screens.
+    <div className="relative overflow-x-auto rounded-lg border border-border bg-card shadow-card">
       <table className="w-full min-w-[720px] text-left text-sm">
         <caption className="sr-only">{label}</caption>
         {children}
@@ -145,7 +137,8 @@ export function AdminTableShell({
 
 export const thClass =
   "eyebrow whitespace-nowrap border-b border-border px-4 py-3 text-left font-medium";
-export const tdClass = "border-b border-border-extra-light px-4 py-3 align-middle";
+export const tdClass =
+  "border-b border-border-extra-light px-4 py-3 align-middle";
 
 export function formatAdminDate(value: string | null | undefined) {
   if (!value) return "-";
