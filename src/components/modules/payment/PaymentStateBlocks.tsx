@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { CenteredError } from "@/components/modules/shared/CenteredError";
 import { BaseSkeleton } from "@/components/reusable-ui-blocks/placeholder/skeletons/BaseSkeleton";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/routes";
@@ -41,21 +42,14 @@ export function PaymentErrorState({
   action?: ReactNode;
 }) {
   return (
-    <section
-      className="rounded-lg border border-border bg-card p-6 shadow-card"
-      role="alert"
-    >
-      <h2 className="text-display-sm tracking-[-0.04em]">{title}</h2>
-      <p className="mt-2 text-sm text-muted-foreground">{message}</p>
-      <div className="mt-5 flex flex-wrap gap-3">
-        {retry ? (
-          <Button type="button" onClick={retry}>
-            Try again
-          </Button>
-        ) : null}
-        {action}
-      </div>
-    </section>
+    <CenteredError title={title} message={message}>
+      {retry ? (
+        <Button type="button" onClick={retry}>
+          Try again
+        </Button>
+      ) : null}
+      {action}
+    </CenteredError>
   );
 }
 

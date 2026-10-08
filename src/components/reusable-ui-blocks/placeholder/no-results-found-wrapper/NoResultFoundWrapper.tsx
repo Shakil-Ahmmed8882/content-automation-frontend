@@ -56,10 +56,12 @@ export function NoResultFoundWrapper<T>(props: NoResultFoundWrapperProps<T>) {
 
       {/* Text */}
       <div className="flex flex-col items-center gap-2 text-center max-w-xs">
-        <p className="text-foreground text-[28px] font-bold leading-snug">
+        <p className="text-foreground text-[28px] font-semibold tracking-[-0.04em] leading-snug">
           {title}
         </p>
-        <p className="text-muted-foreground text-sm leading-relaxed">{message}</p>
+        <p className="text-muted-foreground text-sm leading-relaxed">
+          {message}
+        </p>
       </div>
 
       {/* Try Again */}

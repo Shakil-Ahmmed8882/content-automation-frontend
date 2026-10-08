@@ -1,4 +1,7 @@
-export type UpcomingFeatureStatus = "COMING_SOON" | "IN_DEVELOPMENT" | "PLANNED";
+export type UpcomingFeatureStatus =
+  | "COMING_SOON"
+  | "IN_DEVELOPMENT"
+  | "PLANNED";
 
 export interface UpcomingFeature {
   id: string;

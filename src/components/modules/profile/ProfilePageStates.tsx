@@ -1,6 +1,7 @@
 "use client";
 
 import { RotateCcw } from "lucide-react";
+import { CenteredError } from "@/components/modules/shared/CenteredError";
 import { BaseSkeleton } from "@/components/reusable-ui-blocks/placeholder/skeletons/BaseSkeleton";
 import { Button } from "@/components/ui/button";
 import { useAuthCooldown } from "@/hooks/auth.hook";
@@ -43,27 +44,21 @@ export function ProfileErrorState({
 }) {
   const cooldown = useAuthCooldown();
   return (
-    <div className="mx-auto flex min-h-96 w-full max-w-3xl items-center">
-      <div className="w-full rounded-lg bg-card p-6 shadow-card">
-        <ProfileAlert>
-          <p className="font-medium">Couldn't load your profile.</p>
-          <p className="mt-1 text-muted-foreground">
-            {toApiError(error).userMessage}
-          </p>
-        </ProfileAlert>
-        <Button
-          type="button"
-          variant="outline"
-          className="mt-5"
-          disabled={pending || cooldown > 0}
-          aria-busy={pending}
-          onClick={retry}
-        >
-          <RotateCcw aria-hidden="true" />
-          {cooldown > 0 ? `Try again in ${cooldown}s` : "Try again"}
-        </Button>
-      </div>
-    </div>
+    <CenteredError
+      title="Couldn't load your profile."
+      message={toApiError(error).userMessage}
+    >
+      <Button
+        type="button"
+        variant="outline"
+        disabled={pending || cooldown > 0}
+        aria-busy={pending}
+        onClick={retry}
+      >
+        <RotateCcw aria-hidden="true" />
+        {cooldown > 0 ? `Try again in ${cooldown}s` : "Try again"}
+      </Button>
+    </CenteredError>
   );
 }
 

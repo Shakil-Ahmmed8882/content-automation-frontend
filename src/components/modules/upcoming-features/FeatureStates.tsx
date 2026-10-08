@@ -1,6 +1,6 @@
-import { AlertCircle, RotateCcw, Sparkles } from "lucide-react";
+import { RotateCcw, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { BaseButton } from "@/components/reusable-ui-blocks/buttons/BaseButton";
+import { CenteredError } from "@/components/modules/shared/CenteredError";
 import { BaseSkeleton } from "@/components/reusable-ui-blocks/placeholder/skeletons/BaseSkeleton";
 import { CardSkeletonV2 } from "@/components/reusable-ui-blocks/placeholder/skeletons/CardSkeletons";
 import { Button } from "@/components/ui/button";
@@ -60,32 +60,17 @@ export function FeaturesError({
 }) {
   const api = toApiError(error);
   return (
-    <div
-      role="alert"
-      className="rounded-lg border border-destructive/30 bg-destructive/5 p-5 shadow-card"
-    >
-      <div className="flex gap-3">
-        <AlertCircle
-          aria-hidden="true"
-          className="mt-0.5 size-4 shrink-0 text-destructive"
-        />
-        <div className="min-w-0">
-          <h2 className="font-medium">{title}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {api.message || api.userMessage}
-          </p>
-          <BaseButton
-            type="button"
-            disabled={pending}
-            onClick={retry}
-            className="mt-4 h-10 rounded-sm border border-border bg-background px-4 text-sm text-foreground hover:bg-accent focus-visible:outline-2 focus-visible:outline-ring"
-          >
-            <RotateCcw aria-hidden="true" className="size-4" />
-            {pending ? "Retrying..." : "Try again"}
-          </BaseButton>
-        </div>
-      </div>
-    </div>
+    <CenteredError title={title} message={api.message || api.userMessage}>
+      <Button
+        type="button"
+        variant="outline"
+        disabled={pending}
+        onClick={retry}
+      >
+        <RotateCcw aria-hidden="true" className="size-4" />
+        {pending ? "Retrying..." : "Try again"}
+      </Button>
+    </CenteredError>
   );
 }
 

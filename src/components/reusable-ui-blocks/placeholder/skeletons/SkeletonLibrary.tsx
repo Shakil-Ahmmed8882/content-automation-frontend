@@ -49,7 +49,7 @@ export function TextSkeleton({
 // ============================================
 export const CommunityCardWithMembersSkeletonCard = () => {
   return (
-    <div className="w-full bg-white rounded-xl space-y-4">
+    <div className="w-full bg-card rounded-xl space-y-4">
       <div className="space-y-2">
         <BaseSkeleton className="h-3 w-1/2 rounded" />{" "}
         {/* “Including Mahadi…” */}
@@ -1072,7 +1072,7 @@ export default function SkeletonLibrary() {
 export const SingleCommunitySkeleton = ({ className }: TCommonProps) => {
   return (
     <div
-      className={`${className} flex items-center gap-3  p-3 hover:bg-muted/50 !rounded-[8px] border border-[#f4f6ff]`}
+      className={`${className} flex items-center gap-3  p-3 hover:bg-muted/50 !rounded-[8px] border border-border`}
     >
       {/* Avatar */}
       <BaseSkeleton className="size-14 rounded-full flex-shrink-0" />
@@ -1094,7 +1094,7 @@ export const CommunitiesSkeletonList = ({ count = 5 }) => {
         {Array.from({ length: count }).map((_, index) => (
           <div
             key={index}
-            className="flex items-center gap-3  p-3 hover:bg-muted/50 !rounded-[8px] border border-[#f4f6ff]"
+            className="flex items-center gap-3  p-3 hover:bg-muted/50 !rounded-[8px] border border-border"
           >
             {/* Avatar */}
             <BaseSkeleton className="size-14 rounded-full flex-shrink-0" />
@@ -1249,7 +1249,7 @@ export function SidebarSkeletonLayout() {
 
 export function SingleCardSkeleton() {
   return (
-    <div className="w-full  rounded-xl shadow-sm shadow-[#f2f2f2] border border-[#fafafa] p-4 space-y-4">
+    <div className="w-full  rounded-xl shadow-card border border-border p-4 space-y-4">
       {/* Image */}
       <BaseSkeleton className="h-40 w-full rounded-lg" />
 
@@ -1284,12 +1284,12 @@ export function HorizontalReelSkeleton() {
 
       {/* View count badge */}
       <div className="absolute top-4 right-3  rounded-full flex items-center gap-1">
-        <BaseSkeleton className="w-7 h-7 bg-white rounded-full" />
+        <BaseSkeleton className="w-7 h-7 bg-card rounded-full" />
       </div>
 
       {/* Profile avatar at bottom */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-        <BaseSkeleton className=" size-10 md:size-12 rounded-full bg-white border-2 border-white" />
+        <BaseSkeleton className=" size-10 md:size-12 rounded-full bg-card border-2 border-card" />
       </div>
     </div>
   );
