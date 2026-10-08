@@ -2,7 +2,7 @@
 
 import { AlertCircle, Link2, RotateCcw } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { BaseButton } from "@/components/reusable-ui-blocks/buttons/BaseButton";
 import { NoResultFoundWrapper } from "@/components/reusable-ui-blocks/placeholder/no-results-found-wrapper/NoResultFoundWrapper";
@@ -16,7 +16,7 @@ import {
 import { routes } from "@/routes";
 import type { Connection } from "@/types/connection.type";
 import type { Platform } from "@/types/platform.type";
-import { apiMessage } from "./connection-ui.helpers";
+import { apiMessage, isPlatformKey } from "./connection-ui.helpers";
 import { FacebookPagePicker } from "./FacebookPagePicker";
 import { normalizeOAuthError, OAuthErrorBanner } from "./OAuthErrorBanner";
 import { PlatformCard } from "./PlatformCard";
@@ -114,6 +114,7 @@ export default function ConnectionsPage() {
   const [pendingDisconnectKey, setPendingDisconnectKey] = useState<
     string | null
   >(null);
+  const handledConnectedRef = useRef<string | null>(null);
 
   const sortedPlatforms = useMemo(
     () => sortPlatforms(platforms.data ?? []),
@@ -127,6 +128,10 @@ export default function ConnectionsPage() {
   const loading = platforms.isPending || connections.isPending;
   const selectFacebook = searchParams.get("select") === "facebook";
   const oauthError = normalizeOAuthError(searchParams.get("error"));
+  const connectedKey = searchParams.get("connected");
+  const platformsPending = platforms.isPending;
+  const platformList = platforms.data;
+  const refetchConnections = connections.refetch;
   const hasNoConnectedAccounts = (connections.data ?? []).length === 0;
 
   async function connect(platformKey: string) {
@@ -162,6 +167,42 @@ export default function ConnectionsPage() {
   function closeQueryState() {
     router.replace(routes.connections, { scroll: false });
   }
+
+  // The backend redirects the browser here with `?connected=<platformKey>` after
+  // a successful OAuth callback. The name shown comes from the loaded platforms
+  // (the raw value is only a fallback, and only when it is a plain platform
+  // slug); the toast fires once per value even under strict-mode double effects;
+  // the param is stripped like the error/select ones.
+  useEffect(() => {
+    if (!connectedKey) {
+      handledConnectedRef.current = null;
+      return;
+    }
+    if (platformsPending) return;
+    if (handledConnectedRef.current === connectedKey) return;
+    handledConnectedRef.current = connectedKey;
+
+    void refetchConnections({ cancelRefetch: false });
+
+    // Authoritative name when platforms loaded; the raw key only as a fallback
+    // when they could not be loaded, and only if it is a plain slug.
+    const platformName =
+      platformList?.find((platform) => platform.key === connectedKey)?.name ??
+      (!platformList && isPlatformKey(connectedKey) ? connectedKey : null);
+    if (platformName) {
+      toast.success(`${platformName} connected.`, {
+        id: `connected-${connectedKey}`,
+      });
+    }
+
+    router.replace(routes.connections, { scroll: false });
+  }, [
+    connectedKey,
+    platformsPending,
+    platformList,
+    refetchConnections,
+    router,
+  ]);
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">

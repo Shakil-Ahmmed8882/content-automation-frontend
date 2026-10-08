@@ -21,22 +21,54 @@ function deriveStatus(platform: Platform, connection?: Connection) {
   return connection?.status ?? "NOT_CONNECTED";
 }
 
-function PlatformLogo({ platform }: { platform: Platform }) {
+/*
+ * Brand colour of the inline icon, applied only while the platform is
+ * connected (owner request; the tokens live next to the other brand values in
+ * globals.css). Spelled out in full so Tailwind can see each class.
+ */
+const BRAND_TEXT_CLASS: Record<string, string> = {
+  linkedin: "text-brand-linkedin",
+  facebook: "text-brand-facebook",
+};
+
+/*
+ * The logo is colourful while the account is connected and greyscale/muted
+ * otherwise (not connected, expired, coming soon). Both sources are handled:
+ * a backend-hosted logo image is desaturated with a CSS filter, the inline
+ * brand icon swaps its brand colour for the muted foreground token.
+ */
+function PlatformLogo({
+  platform,
+  connected,
+}: {
+  platform: Platform;
+  connected: boolean;
+}) {
   const Icon = platformIcons[platform.key as keyof typeof platformIcons];
+  const brandClass = BRAND_TEXT_CLASS[platform.key];
 
   return (
-    <div className="flex size-12 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground outline outline-1 outline-border">
+    <div
+      data-connected={connected}
+      className={cn(
+        "flex size-12 shrink-0 items-center justify-center rounded-md bg-muted outline outline-1 outline-border transition-colors",
+        connected && brandClass ? brandClass : "text-muted-foreground",
+      )}
+    >
       {platform.logoUrl ? (
         <BaseImage
           src={platform.logoUrl}
           alt=""
           aria-hidden="true"
           className="size-12 rounded-md"
-          imgClass="object-contain p-2"
+          imgClass={cn(
+            "object-contain p-2 transition-[filter,opacity]",
+            !connected && "opacity-50 grayscale",
+          )}
           sizes="48px"
         />
       ) : Icon ? (
-        <Icon aria-hidden="true" className="size-6" />
+        <Icon aria-hidden="true" className="size-7" />
       ) : (
         <Link2 aria-hidden="true" className="size-5" />
       )}
@@ -83,7 +115,7 @@ export function PlatformCard({
       )}
     >
       <div className="flex min-w-0 items-start gap-4">
-        <PlatformLogo platform={platform} />
+        <PlatformLogo platform={platform} connected={status === "CONNECTED"} />
         <div className="min-w-0 flex-1 space-y-2">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
             <h2
