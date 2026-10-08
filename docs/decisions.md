@@ -585,3 +585,12 @@ typography/variations/FilterTitle}`,
 connections/{FacebookPagePicker,PlatformCard}, executions/PublishPanel, posts/{ComposerForm,PostNotice,
 TargetPlatforms}, profile/{AvatarUploader,ChangePasswordCard,DangerZone,IdentityCard,ProfileAlert,ProfileSection},
 admin/{AdminImageField,FeatureForm,PlatformForm}}`.
+
+## D34 - Production API goes through a same-origin proxy
+
+**Problem:** Vercel (frontend) and Render (backend) are different sites, so auth cookies are third-party and the
+backend's single-origin CORS rejected the Vercel host, leaving the session check stuck on "Retry".
+**Decision:** `next.config.ts` rewrites `/api/v1/*` to `API_PROXY_TARGET` when that variable is set. Production
+sets `NEXT_PUBLIC_API_BASE_URL=/api/v1` and `API_PROXY_TARGET=<render url>`; local dev keeps the direct URL.
+**Why:** cookies become first-party to the frontend host and CORS is no longer involved. The backend
+`FRONTEND_URL` is still needed for OAuth callback redirects.

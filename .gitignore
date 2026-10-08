@@ -53,3 +53,5 @@ next-env.d.ts
 # Personal scratch / agent scaffold — local only
 temp.md
 AGENTS.md
+
+.vercel
