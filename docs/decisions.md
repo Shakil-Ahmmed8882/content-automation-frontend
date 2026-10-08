@@ -401,3 +401,187 @@ utilities cannot fight); `ScrollableTabsHeader` uses `border-border` / `text-for
 overrides were removed from both pages. The Pagination wrappers keep theirs for now.
 **Why:** Fixing the shared block removes the need for per-page colour wildcards, which silently break
 any child that sets its own colour.
+
+## D26 — Hydration warnings suppressed on `<html>` and `<body>` only
+
+**Problem:** Browser extensions (colour pickers, password managers, ad blockers) add attributes such as
+`cz-shortcut-listen`, `__processed_*` and a `hydrated` class to `<html>`/`<body>` before React hydrates.
+Every page load then logged a hydration-mismatch error that no code change can prevent, which buries
+real errors during browser verification.
+**Decision:** `suppressHydrationWarning` on `<html>` and `<body>` in `src/app/layout.tsx`. It only silences
+attribute mismatches on those two elements, not on their children.
+**Why:** It is the documented Next.js remedy for extension-injected attributes and keeps the console
+usable as a verification signal; mismatches inside the component tree are still reported.
+
+## D27 — Confirm modal made accessible and dark-themed; BaseButton colours fixed
+
+**Problem:** Browser verification of Disconnect found `GenericModalWrapper` (used only by
+`DeleteConfirmModal`) had no `role="dialog"`/`aria-modal`, did not move focus into the dialog, let Tab
+escape into the page behind it, ignored Escape, and its icon-only close button had no accessible name. It
+also painted a raw white panel with `#141414`/`#666` text on the dark-only theme. Separately,
+`BaseButton intent="primary"` used `text-white` on `bg-primary` (`#ededed`), so its label was white on
+near-white, and `primary-light` referenced a `primary-light` token that does not exist.
+**Decision:** Fixed both shared blocks in place (CLAUDE.md: genuine bugs). The modal now labels itself from
+its heading (`useModalTitleId`), focuses the element marked `data-autofocus` (Cancel in the confirm modal)
+or the panel, traps Tab/Shift+Tab, closes on Escape, restores focus to the opener, and uses `bg-card` /
+`border-border` / `text-muted-foreground`. `BaseButton` primary uses `text-primary-foreground` with
+`primary-hover`, `primary-light` and `ghost` use the existing `primary-subtle`/`accent` tokens, `disabled`
+uses `muted`, and the focus ring uses `ring-ring` with a `background` offset.
+**Why:** Satisfies the shared-confirmation and accessibility checklist items (focus trap/return, Cancel as
+default focus) once for every destructive action instead of per page, and removes light-theme leftovers.
+
+## D28 — BaseImage: current `onLoad`, dark loading and fallback colours
+
+**Problem:** `BaseImage` used the `onLoadingComplete` prop that `next/image` has deprecated (a console warning on
+every image), a `gray-100/200` shimmer that flashed bright on the dark theme while images loaded, a
+`bg-gray-50` fallback tile, and a template-literal `className` that could emit the word `undefined`.
+**Decision:** Switched to `onLoad` (still forwarding a caller's `onLoad`), the shimmer uses `muted`/`accent`,
+the fallback tile uses `muted`, and the wrapper class goes through `cn()`.
+**Why:** Removes a warning that would hide real console errors during verification and keeps the shared
+image block inside the dark-only token rule.
+
+## D29 — Workflow graph: load React Flow styles, orient nodes left to right
+
+**Problem:** `WorkflowGraph` never imported `@xyflow/react/dist/style.css`, so the canvas could not size or
+place nodes (START and END were missing, edges were stray curves) and the console warned about it on every
+execution page. After the import, the default top/bottom handles still drew looping edges for a horizontal
+layout, and edges used `--border`, which is almost invisible on the dark canvas.
+**Decision:** Import the stylesheet in the component, set `colorMode="dark"`, give every node
+`sourcePosition: Right` / `targetPosition: Left`, and stroke edges with `--muted-foreground`. The execution
+subtitle now shows the outcome message once a run is finished instead of "Publishing started" for every state.
+**Why:** The graph is the headline view of the executions slice and was visibly broken; the per-platform
+result list stays as the accessible text equivalent. Note: the attribution is still hidden through
+`proOptions.hideAttribution` (see D21); React Flow asks for a Pro subscription for that, which needs an owner
+decision and was not changed here.
+
+## D32 — Admin tables: wrapper is `relative` so hidden labels cannot widen the page
+
+**Problem:** On 360/375px screens every admin table pushed the whole page sideways (up to ~380px). The table
+scrolled correctly inside its `overflow-x-auto` wrapper, but its visually hidden `sr-only` header label is
+`position: absolute`; with no positioned ancestor it was placed against the page, escaped the wrapper's
+clipping and stretched the scroll width.
+**Decision:** `relative` on the shared admin table wrapper (`AdminShared.tsx`), so the wrapper is the
+containing block and clips those labels with the rest of the table.
+**Why:** One class fixes all four admin tables; verified by a 4-width sweep (360/375/768/1280) of guest,
+signed-in and admin routes with zero horizontal page overflow. Also: admin `sortOrder` is now a real integer in
+the schema and forms (the shared `TextField` hands back numbers for `type="number"`), which un-blocks saving
+any platform or feature whose Order was edited.
+
+## D33 — One centered error panel for page-level failures
+
+**Problem:** Page-level error states were left-aligned cards, and the session-bootstrap failure (for example a
+backend 429 on `/auth/me`) rendered a bare block with a full-width button in the top-left corner of an empty
+page, with no shell. `DefaultErrorUI` also used hard-coded dark text (`#141414`) that was unreadable on the
+dark theme.
+**Decision:** Added `modules/shared/CenteredError` (icon, title, message, actions; `fullPage` for places with
+no shell, `compact` for a failed section inside a longer page). The session guard, route error boundary,
+executions, payments, admin, profile, upcoming-features and posts error states all render through it with
+their existing props unchanged; the 404 page is centered the same way; `DefaultErrorUI` uses theme tokens.
+**Why:** Errors read the same everywhere and always appear in the middle of the space they replace.
+Note for testing: the backend global limiter allows 300 requests per 15 minutes per IP, which automated
+browser sweeps on the same machine can exhaust (restarting the backend resets the in-memory counter).
+
+## D30 - OAuth callback redirects browsers to the frontend
+
+**Problem:** The provider redirect URIs (`LINKEDIN_REDIRECT_URI` / `FACEBOOK_REDIRECT_URI`) are registered in the
+provider consoles and point at the **backend** (`http://localhost:5000/api/v1/connections/<key>/callback`). After
+consent the browser landed on that URL and showed raw JSON (`{"success":true,...,"data":{"kind":"connected",...}}`);
+the user had to press Back to return to `/connections`.
+**Decision:** The backend callback now tells a browser **navigation** from a **programmatic** call. A navigation is
+answered with an HTTP 302 to `${FRONTEND_URL}/connections` plus one fixed query param; programmatic callers (the
+`/connections/callback/[platform]` page's XHR, Postman, tests) get the exact JSON and status codes they got before.
+The frontend `ConnectionsPage` gained handling for `?connected=<platformKey>` (success toast with the platform name
+from the loaded platforms, connections query refetched, param removed with `router.replace`); `?select=facebook` and
+`?error=cancelled|invalid-state|failed` already worked and are untouched. The redirect URIs were **not** changed.
+**Rule used to decide:** `Sec-Fetch-Mode: navigate` means navigation; any other `Sec-Fetch-Mode` (`cors`,
+`same-origin`, `no-cors`) means programmatic. Only when the browser sends no `Sec-Fetch-Mode` (Safari older than
+16.4) the `Accept` header decides: it must contain `text/html` and must not contain `application/json`. No headers
+(curl, Postman, supertest, server-to-server) means JSON. If `FRONTEND_URL` is missing or not an http(s) URL there is
+nowhere safe to redirect, so even a navigation gets the JSON response.
+**Why:** It fixes the stranded-user problem without touching secrets, env or provider-console registrations, and it
+keeps the existing JSON contract (and its tests) intact. Both OAuth outcomes work with either redirect URI: with the
+backend URI the 302 brings the user back; if the URI is ever moved to the frontend route the existing callback page
+still works. The target is built only from config, a fixed path and fixed codes (plus the platform key of the row the
+backend just stored), so request input is never reflected (no open redirect) and no code, token, provider message or
+id is put in a URL. A `Vary: Sec-Fetch-Mode, Accept` header keeps caches from mixing the two answers.
+**Outcome table** (browser navigation to the backend callback):
+
+| Callback outcome | Redirect (`Location`) |
+| --- | --- |
+| Connected (LinkedIn, or Facebook with exactly one Page, auto-selected) | `${FRONTEND_URL}/connections?connected=<platformKey>` |
+| Facebook needs a Page choice (`data.kind = "select-page"`, zero or several Pages) | `${FRONTEND_URL}/connections?select=facebook` |
+| User cancelled: provider `error` is `access_denied`, `user_cancelled_login` or `user_cancelled_authorize` (no code) | `${FRONTEND_URL}/connections?error=cancelled` |
+| `state` missing, unknown, expired, replayed, or issued for another platform | `${FRONTEND_URL}/connections?error=invalid-state` |
+| Anything else (other provider error, missing code, token exchange 502, platform not live or not wired, unexpected exception) | `${FRONTEND_URL}/connections?error=failed` |
+
+**Notes:** The `state` is still consumed on a provider error, so a cancelled attempt cannot be replayed. The
+`connected` value is only matched against the loaded platforms; if platforms failed to load it falls back to the
+raw value only when it is a plain slug, and an unrecognised value just cleans the URL without a toast. The toast uses a
+fixed `id` and a ref guard, so React strict mode or a refresh cannot show it twice. Tracked limitation: a user who
+cancels after the 10 minute `state` TTL sees `invalid-state`, because the state check runs first.
+
+
+## D31 - Dark popovers, pointer cursors, form rhythm, connected platform colour
+
+**Problem:** (1) Several popover-type surfaces were still light: the executions date filter
+(`DateFilterButton`, hard-coded `bg-white` and hex greys), the delete-account modal (`MultipageModal` panel was
+`bg-white`), plus `TimePicker`, `Dropdown`, `CalendarModal`, `ModalWrapper`, `ImageGallery`, the avatar loading
+shimmer, the tooltip (inverse light surface) and the sonner toasts (pure black). `--popover` equalled `--card`, so a
+menu opened over a card had no edge. (2) Tailwind v4 preflight no longer sets `cursor: pointer`, and shadcn `SelectItem`
+shipped `cursor-default`, so the account trigger, checkbox rows, switches, tabs, options and menu items showed an arrow.
+(3) Forms were cramped: 40px inputs, 16px between fields, `min-h-16` textarea, 12/14px error and helper text, a
+character counter floating above the Title field, and a Status select that shrank to `w-fit`. (4) The platform logo on
+`/connections` was always the same grey. (5) `text-destructive` (`#ee0000`) is only 4.2:1 on `#111`, the focus ring at
+50% was about 2.5:1, and the tab pills were `div`s with an `onClick` (no role, no keyboard).
+**Decision:**
+- Tokens (`globals.css`): `--popover` is now `#171717` (one step above card; the existing `canvas-soft` value),
+  `--accent` is `#262626` so hover and selected rows stay visible on it, `--ring` is `#d4d4d4`. Added
+  `--destructive-foreground` (white label on the red fill, 4.5:1) and `--destructive-text` (`#ff6166`, 6.1:1) for red
+  used as text. Added `--brand-linkedin` and `--brand-facebook` (see below).
+- Every popover-type surface uses `bg-popover text-popover-foreground border-border shadow-float`; hover and selected
+  rows use `bg-accent`. Radix Select, Popover, Tooltip, the account menu, Drawer, date filter, calendar, time picker,
+  Dropdown, multipage modal, modal wrapper, image gallery and toasts all share it. The date filter marks the active
+  preset with a check and `aria-current`, rows highlight with `has-[:focus-visible]` so mouse opens do not look selected.
+- Cursors: one `:where(...)` rule in `@layer base` (zero specificity) gives `cursor: pointer` to buttons, links,
+  `summary`, `select`, `label[for]`, checkbox/radio/file/range inputs and `[role=button|link|menuitem*|option|tab|switch|
+  checkbox|radio|combobox]`, and one rule gives `not-allowed` to disabled form controls, `[aria-disabled=true]`,
+  `[data-disabled]` and the label that follows a disabled control. Utilities still win, so no component was unpicked;
+  only `SelectItem` (`cursor-default`) was changed.
+- Forms, fixed centrally: inputs, select triggers and the new `Button` size `xl` are 44px (`h-11`); `GenericForm` stacks
+  fields with `space-y-6`; `FormItem` gap is `gap-2.5`; helper and error text are `text-xs leading-5` with
+  `role="alert"` on errors; textarea is `min-h-28`; `SelectField` trigger is `w-full`; `SubmitButton` defaults to
+  `size="xl"`. Auth, profile, composer and admin forms use the same 24px rhythm (composer sections 32px), the character
+  counter moved under the Content field, and the admin two-column row is `items-start`.
+- Platform logo (`PlatformCard`): connected shows the brand colour, anything else (not connected, expired, coming
+  soon) is `text-muted-foreground`; a backend `logoUrl` image is desaturated with `grayscale opacity-50` instead. This
+  is the only sanctioned use of non-palette colour ("no new accent colour" is overridden for platform logos, per the
+  owner), kept to two tokens (`#0a66c2`, `#1877f2`) so no raw hex appears in components.
+- Accessibility: `TabsItem` is now `role="tab"` inside a `role="tablist"` with a roving tabindex, Arrow/Home/End to move
+  focus and Enter/Space to select; `Pagination` is a labelled `nav` with `aria-current` and per-page labels; the
+  composer "Publish to" legend is a direct child of its fieldset, and the whole publish-panel row is one label.
+**Why:** Fixing the shared blocks and the base layer once beats per-page overrides, and a token change reaches screens
+other slices are still building. The accent and ring bumps are global on purpose: both were below the contrast a
+focus or hover state needs on the near-black surfaces. Verified in a headless browser at 1280 and 375px: date filter,
+custom range calendar, account menu, audit-log and platform-form selects, delete-account modal, login, register with
+errors, composer, profile, connections (connected, plus a read-only mocked expired state), tab keyboard navigation and
+`getComputedStyle(cursor)` on trigger, tab, checkbox, label, switch, option, menu item and disabled controls.
+**Left alone:** the unused chart demos (`charts/line-chart/*`, `charts/donut-breakdown-chart/*` incl. `demo/`) and the
+`SkeletonLibrary` demo headings still carry light hex colours and `font-bold`; files owned by other work in progress
+(`ConnectionsPage`, `AdminShared`, audit-log page, `RouteError`, `RouteNotFound`, `SessionGuard`, `DefaultErrorUI`,
+`*States.tsx`, `ExecutionDetailPage`, payment pages) still use plain `text-destructive` text where they do.
+**Files changed:** `src/app/globals.css`, `src/providers/index.tsx`, `src/lib/status.ts`,
+`src/components/ui/{button,input,popover,select,textarea,tooltip}.tsx`,
+`src/components/reusable-ui-blocks/{attachment/AttachmentField, buttons/variations/ToggleIconButton,
+common-modules/scrollable-tabs-header/ScrollableTabsHeader, date-time/calendar/CalendarModal,
+date-time/time-picker/{TimePicker,ScrollColumn}, dates/date-filter/{DateFilterButton,DateRangePresetFilter},
+dropdown/Dropdown, form/core/GenericForm, form/fields/{FieldLabel,SelectField,SubmitButton,TextField},
+form/primitives/form-primitives, images/ImageGallery, images/variations/avatar/{ActiveInactiveAvatar,BaseAvatar,
+GroupAvatars}, modal/ModalWrapper, modal/multipage-modal/MultipageModal,
+modal/multipage-modal/variations/{successError,assets/CloseIcon}, overlays/drawer/{Drawer,DrawerShell,
+variations/successError}, pagination/Pagination, placeholder/no-results-found-wrapper/NoResultFoundWrapper,
+placeholder/skeletons/{BaseSkeleton,SkeletonLibrary}, tabs/{TabItem,TabsProvider}, typography/Heading,
+typography/variations/FilterTitle}`,
+`src/components/modules/{auth/{AuthAlert,AuthCard,ForgotPasswordForm,LoginForm,RegisterFlow,ResetPasswordForm},
+connections/{FacebookPagePicker,PlatformCard}, executions/PublishPanel, posts/{ComposerForm,PostNotice,
+TargetPlatforms}, profile/{AvatarUploader,ChangePasswordCard,DangerZone,IdentityCard,ProfileAlert,ProfileSection},
+admin/{AdminImageField,FeatureForm,PlatformForm}}`.

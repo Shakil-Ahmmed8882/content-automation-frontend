@@ -399,12 +399,23 @@ Tokens are AES-256-GCM encrypted at rest and never returned. One connection per 
 
 ### 6.3 `GET /connections/:platform/callback?code=&state=`
 - Access: **public (NOT auth-guarded)** - identity comes from the `state`.
-- **Returns JSON, not a redirect** (see gaps). Status 200, with `data` of `ConnectCallbackResult`:
+- **Two kinds of caller, two answers** (decided by `isBrowserNavigation` in `connection.utils.ts`; see "Browser navigation" below). A **programmatic** call (no `Sec-Fetch-Mode: navigate`; the frontend callback page's XHR, Postman, curl, tests) gets JSON. Status 200, with `data` of `ConnectCallbackResult`:
   - LinkedIn and Facebook-with-exactly-one-Page: message `"Platform connected successfully"`, `{ kind:"connected", connection: Connection }`.
   - Facebook with 0 or 2+ Pages: message `"Select a Page to finish connecting"`, `{ kind:"select-page", pages: FacebookPage[] }` (the page list can be **empty** if the user administers no Pages - handle this state). Held in Redis for 10 min keyed by userId (one in-flight Facebook connect per user).
 - Errors: 400 `"Invalid or expired OAuth state"` (unknown, expired, replayed, or state for a different platform); 400 `"Missing authorization code"` (e.g. user denied consent: provider sends `?error=access_denied&state=...` and no `code`; state is consumed); 400 `"This platform is not available to connect yet"`; 404 `"Platform not found"`; 501; **502** `"Failed to exchange LinkedIn authorization code"`, `"Failed to fetch LinkedIn member identity"`, `"Failed to exchange Facebook authorization code"`, `"Failed to obtain a long-lived Facebook token"`, `"Failed to list Facebook Pages"`, `"No Facebook Page returned"`.
 - Cookies: none set/needed.
-- Provider redirect URIs are configured in backend env as `LINKEDIN_REDIRECT_URI` / `FACEBOOK_REDIRECT_URI` = `http://localhost:5000/api/v1/connections/<key>/callback` (the **backend** URL). With those values the browser lands on raw JSON at the backend origin. To drive this from the SPA the redirect URIs must be changed (backend env + provider consoles) to a **frontend route** that then calls this endpoint with `fetch(..., {credentials:"include"})` passing the `code` and `state` it received. **UNVERIFIED** end-to-end (backend docs only record the idea in `docs/credentials-setup-log.md`; live OAuth was never automated).
+- Provider redirect URIs are configured in backend env as `LINKEDIN_REDIRECT_URI` / `FACEBOOK_REDIRECT_URI` = `http://localhost:5000/api/v1/connections/<key>/callback` (the **backend** URL, registered in the provider consoles; unchanged).
+- **Browser navigation (provider redirects the user's browser to the backend URL).** Detected by `Sec-Fetch-Mode: navigate`; when the browser sends no `Sec-Fetch-Mode` (Safari older than 16.4) by `Accept` containing `text/html` and not `application/json`. Any other `Sec-Fetch-Mode` (`cors`, `same-origin`, `no-cors`) is programmatic. The backend runs the same handshake, then answers **HTTP 302** to `${FRONTEND_URL}/connections?<one param>` (trailing slash on `FRONTEND_URL` tolerated; if `FRONTEND_URL` is unset or not http(s) the JSON response is returned instead). The target is built only from config, the fixed path and the fixed codes below, never from request input, and never contains a code, token, provider message or id. Response also carries `Cache-Control: no-store` and `Vary: Sec-Fetch-Mode, Accept`.
+
+  | Outcome | `Location` |
+  | --- | --- |
+  | Connected (LinkedIn; Facebook with exactly one Page) | `/connections?connected=<platformKey>` (key of the stored connection, e.g. `linkedin`) |
+  | Facebook needs a Page choice (`select-page`, 0 or 2+ Pages) | `/connections?select=facebook` |
+  | Provider `error` is `access_denied` / `user_cancelled_login` / `user_cancelled_authorize` (no code) | `/connections?error=cancelled` |
+  | `state` missing, unknown, expired, replayed, or for another platform | `/connections?error=invalid-state` |
+  | Anything else (other provider error, missing code, 502 token exchange, platform not live/wired, unexpected error) | `/connections?error=failed` |
+
+  The frontend `ConnectionsPage` consumes `connected`, `select` and `error` and strips them from the URL. The `/connections/callback/[platform]` page (for a redirect URI moved to a frontend route) keeps calling this endpoint with `fetch` (programmatic path, JSON). Both paths consume the single-use `state`. The 302 branch is covered by `tests/e2e/connection-callback-redirect.e2e.test.ts` in the backend (provider mocked); a real LinkedIn/Facebook consent was **not** automated, so the live round trip is **UNVERIFIED** until the owner runs it once.
 
 ### 6.4 `GET /connections/facebook/pages`
 - Access: auth. Success **200** `"Facebook Pages fetched successfully"`, `data: FacebookPage[]`.
@@ -590,7 +601,7 @@ Change names: auth-ui, user-profile-ui, app-shell-and-marketing, platforms-and-c
 | `GET /platforms` | platforms-and-connections-ui (also post-composer-ui platform picker) |
 | `GET /connections` | platforms-and-connections-ui (also post-composer-ui, app-shell dashboard summary) |
 | `GET /connections/:platform/connect` | platforms-and-connections-ui |
-| `GET /connections/:platform/callback` | platforms-and-connections-ui (only if redirect URI moved to a frontend route; otherwise NOT consumed) |
+| `GET /connections/:platform/callback` | NOT called by the frontend when the redirect URI stays on the backend (the browser hits it and is 302-redirected to `/connections?...`, see 6.3); called by `/connections/callback/[platform]` only if the redirect URI is moved to a frontend route |
 | `GET /connections/facebook/pages` | platforms-and-connections-ui |
 | `POST /connections/facebook/select-page` | platforms-and-connections-ui |
 | `DELETE /connections/:platform` | platforms-and-connections-ui |
@@ -629,13 +640,13 @@ Change names: auth-ui, user-profile-ui, app-shell-and-marketing, platforms-and-c
 | `GET /admin/audit-logs` | admin-console-ui |
 | `GET /`, `GET /health` | not consumed (optional: app-shell health/maintenance banner) |
 
-Backend endpoints present but not (necessarily) consumed: `GET /payments/callback` (server-to-browser redirect), `GET /connections/:platform/callback` (unless the redirect URI is moved), `GET /auth/me` vs `GET /users/me` overlap (use `/auth/me` for bootstrap), `GET /admin/platforms/:id` and `GET /admin/upcoming-features/:id` (only needed for dedicated edit pages; list data already contains every field), `GET /`/`GET /health`. Endpoints the frontend might expect but that **do not exist**: see gaps.
+Backend endpoints present but not (necessarily) consumed: `GET /payments/callback` (server-to-browser redirect), `GET /connections/:platform/callback` (the provider redirects the browser to it; it 302s back to `/connections?...`, see 6.3), `GET /auth/me` vs `GET /users/me` overlap (use `/auth/me` for bootstrap), `GET /admin/platforms/:id` and `GET /admin/upcoming-features/:id` (only needed for dedicated edit pages; list data already contains every field), `GET /`/`GET /health`. Endpoints the frontend might expect but that **do not exist**: see gaps.
 
 ---
 
 ## 14. Known gaps / backend quirks the frontend must work around
 
-1. **OAuth connect callback returns JSON, not a redirect.** Provider redirect URIs point at the backend (`http://localhost:5000/api/v1/connections/<key>/callback`), so the browser ends on raw JSON and the user is stranded. Work-around (needs backend env + provider console change, **UNVERIFIED live**): set `*_REDIRECT_URI` to a frontend route (e.g. `/connections/callback/:platform`), which reads `code` + `state` from the URL and calls `GET /connections/:platform/callback` with credentials, then routes on `data.kind` (`connected` -> connections page; `select-page` -> Page picker via `GET /connections/facebook/pages`). Both authUrl and token exchange read the same env value, so they stay consistent. Alternatively ask backend to 302 to `FRONTEND_URL/connections?...` (not implemented).
+1. **OAuth connect callback returned raw JSON to the browser (RESOLVED, decision D30).** Provider redirect URIs point at the backend (`http://localhost:5000/api/v1/connections/<key>/callback`), so the browser used to end on raw JSON and the user was stranded. The backend now 302-redirects browser navigations to `${FRONTEND_URL}/connections?connected=<key>` / `?select=facebook` / `?error=cancelled|invalid-state|failed` (table in 6.3) and keeps returning JSON to programmatic callers; no env or provider-console change was needed. The alternative (moving `*_REDIRECT_URI` to the frontend route `/connections/callback/:platform`, which calls the endpoint with `fetch`) still works but is not required. **UNVERIFIED live** until the owner completes one real consent.
 2. **No resend-OTP endpoint.** Resend = call `POST /auth/register` again with the same name/email/password (overwrites pending record and OTP) or `POST /auth/forgot-password` again. Each counts toward the shared 20-per-15-min IP limiter. The UI must keep the registration form data in memory/sessionStorage to allow resend (password would need re-entry; do not persist plaintext password in storage - ask the user to re-enter).
 3. **Dev builds may expose `otp`** in `register` and `forgot-password` response `data` (`EXPOSE_OTP_IN_RESPONSE=true` and non-production). Use only behind a dev flag (e.g. autofill in dev); never render it in production builds.
 4. **OTP lifetime 5 minutes, no countdown from server** - client must compute its own timer from the moment of the 200; no "expires at" in the response.

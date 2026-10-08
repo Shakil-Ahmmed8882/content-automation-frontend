@@ -820,8 +820,7 @@ Provider token expiry display: `expiresAt` shown "Expires <date>"; never show to
 
 ### S11 — OAuth return `/connections/callback/[platform]`
 
-**Purpose.** The provider's redirect URI points at this **frontend** route (platforms design D1) because the backend callback returns JSON and does not redirect (V `connection.controller.ts#callback`).
-Requires backend env change: `LINKEDIN_REDIRECT_URI` / `FACEBOOK_REDIRECT_URI` = `<FRONTEND_URL>/connections/callback/<platform>` and the same URI registered in each provider console (config dependency, no code change) — today's `.env.example` points at the backend.
+**Purpose.** Optional route, used only if the provider's redirect URI is moved to this **frontend** route (platforms design D1). **Update (decision D30):** with the redirect URIs left on the backend, the backend callback now 302-redirects the browser to `/connections?connected=<platformKey>` / `?select=facebook` / `?error=<code>` (V `connection.controller.ts#callback`), and `ConnectionsPage` handles `connected` with a toast + refetch, so this route is no longer on the default path. Using it needs `LINKEDIN_REDIRECT_URI` / `FACEBOOK_REDIRECT_URI` = `<FRONTEND_URL>/connections/callback/<platform>` registered in each provider console (config dependency, no code change); its `fetch` is a programmatic call and still gets JSON.
 
 **Layout.** Centred minimal state inside the shell (or bare): spinner + "Finishing connection..." (`role="status"`), no other controls.
 
