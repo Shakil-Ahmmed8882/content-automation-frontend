@@ -44,7 +44,7 @@ export type PresetDateRange = {
  * have started to drift.
  */
 const PILL_CLASS =
-  "flex h-12 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full px-5 font-proxima-nova text-base leading-6 font-semibold text-muted-foreground shadow-xs transition-colors hover:bg-accent";
+  "flex h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-sm border border-border px-4 text-sm font-medium text-foreground shadow-xs transition-colors hover:bg-accent";
 
 export type PresetDateSelection = {
   preset: DateRangeFilter | undefined;
@@ -98,8 +98,8 @@ export function DateRangePresetFilter(props: Props) {
     emptyLabel,
     initialPreset,
     initialCustomRange,
-    size = 48,
-    buttonColor = "bg-surface-disabled",
+    size = 40,
+    buttonColor = "bg-background",
     className = PILL_CLASS,
     iconClassName = "size-5 shrink-0",
   } = props;

@@ -5,7 +5,7 @@ export const FilterTitle = ({ text }: { text: string }) => {
     <>
       <Heading
         as={"h3"}
-        className="text-[#262829]  !text-[17px] !font-semibold leading-[140%]"
+        className="text-foreground !text-[17px] !font-semibold leading-[140%]"
       >
         {text}
       </Heading>

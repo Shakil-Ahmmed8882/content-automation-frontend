@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Check } from "lucide-react";
 import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 import type { DateRangeFilter } from "@/components/reusable-ui-blocks/common-modules/utils/getDateRangeFromFilter";
@@ -88,14 +88,14 @@ export function DateFilterButton(props: DateFilterButtonProps) {
     customStartDate,
     customEndDate,
     onCustomRangeSelect,
-    buttonColor = "bg-white",
+    buttonColor = "bg-background",
     showSelectedType = true,
     showFilterText = false,
     showBorder = false,
     size = 36,
     className,
     emptyLabel,
-    iconClassName = "size-4 text-[#666]",
+    iconClassName = "size-4 text-muted-foreground",
   } = props;
 
   const { t } = useTranslation();
@@ -158,9 +158,9 @@ export function DateFilterButton(props: DateFilterButtonProps) {
           type="button"
           style={{ height: size, width: showSelectedType ? undefined : size }}
           className={cn(
-            "relative inline-flex cursor-pointer items-center justify-center gap-2 rounded-[60px] px-3 font-proxima-nova text-sm font-semibold text-[#666] transition-colors hover:bg-[#F0F0F0]",
+            "relative inline-flex cursor-pointer items-center justify-center gap-2 rounded-sm px-3 text-sm font-medium text-foreground transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none",
             buttonColor,
-            showBorder && "border border-[#D0D0D0]",
+            showBorder && "border border-border",
             className,
           )}
         >
@@ -177,7 +177,10 @@ export function DateFilterButton(props: DateFilterButtonProps) {
       <PopoverContent
         align="end"
         sideOffset={8}
-        className="w-64 rounded-2xl border border-[#F0F0F0] bg-white p-0 shadow-card"
+        className={cn(
+          "rounded-md border border-border bg-popover p-0 text-popover-foreground shadow-float",
+          showCalendar ? "w-auto" : "w-64",
+        )}
       >
         {showCalendar ? (
           <div className="flex flex-col gap-3 p-3">
@@ -191,7 +194,7 @@ export function DateFilterButton(props: DateFilterButtonProps) {
               <button
                 type="button"
                 onClick={() => setShowCalendar(false)}
-                className="flex-1 cursor-pointer rounded-[60px] border border-[#F0F0F0] py-2 font-proxima-nova text-sm font-semibold text-[#141414] hover:bg-[#FAFAFA]"
+                className="flex-1 cursor-pointer rounded-sm border border-border py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
               >
                 {t("back", "Back")}
               </button>
@@ -199,21 +202,21 @@ export function DateFilterButton(props: DateFilterButtonProps) {
                 type="button"
                 onClick={applyCustomRange}
                 disabled={!range?.from}
-                className="flex-1 cursor-pointer rounded-[60px] bg-primary py-2 font-proxima-nova text-sm font-semibold text-primary-foreground hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex-1 cursor-pointer rounded-sm bg-primary py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {t("apply", "Apply")}
               </button>
             </div>
           </div>
         ) : (
-          <ul className="py-2">
+          <ul className="flex flex-col gap-0.5 p-1">
             {DATE_FILTER_PRESETS.map((preset) => {
               const isActive = value === preset.value;
 
               return (
                 <li
                   key={preset.value}
-                  className="flex items-center justify-between gap-2 px-5 py-2.5 transition-colors hover:bg-[#FAFAFA]"
+                  className="flex items-center justify-between gap-2 rounded-sm px-3 py-2 transition-colors has-[:focus-visible]:bg-accent hover:bg-accent"
                 >
                   {/* flex-1: the row is the hit area, not just the label's own
 									    width — without it the pointer reverts to an arrow over the
@@ -221,14 +224,20 @@ export function DateFilterButton(props: DateFilterButtonProps) {
                   <button
                     type="button"
                     onClick={() => selectPreset(preset)}
-                    className="flex flex-1 cursor-pointer flex-col items-start text-left"
+                    aria-current={isActive ? "true" : undefined}
+                    className="flex flex-1 cursor-pointer flex-col items-start rounded-sm text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
                   >
                     <span
                       className={cn(
-                        "font-proxima-nova text-sm font-semibold",
-                        isActive ? "text-primary" : "text-[#141414]",
+                        "flex items-center gap-2 text-sm",
+                        isActive
+                          ? "font-semibold text-foreground"
+                          : "font-medium text-popover-foreground",
                       )}
                     >
+                      {isActive ? (
+                        <Check aria-hidden="true" className="size-3.5" />
+                      ) : null}
                       {t(preset.labelKey, preset.label)}
                     </span>
 
@@ -236,7 +245,7 @@ export function DateFilterButton(props: DateFilterButtonProps) {
                     preset.value === "custom_date" &&
                     customStartDate &&
                     customEndDate ? (
-                      <span className="font-proxima-nova text-xs text-primary">
+                      <span className="pl-5.5 text-xs text-muted-foreground">
                         {formatRangeDate(customStartDate)}{" "}
                         {t("dateRangeTo", "to")}{" "}
                         {formatRangeDate(customEndDate)}
@@ -248,7 +257,7 @@ export function DateFilterButton(props: DateFilterButtonProps) {
                     <button
                       type="button"
                       onClick={() => cancelPreset(preset)}
-                      className="shrink-0 cursor-pointer rounded-full px-3 py-1 font-proxima-nova text-xs font-bold text-primary hover:bg-primary-subtle"
+                      className="shrink-0 cursor-pointer rounded-sm px-2.5 py-1 text-xs font-semibold text-foreground transition-colors hover:bg-selector focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
                     >
                       {t("cancel", "Cancel")}
                     </button>

@@ -51,7 +51,7 @@ export function TabsProvider(props: TabsProviderProps) {
 export const Tabs = ({ loading = false, children, ...rest }: TabsProps) => {
   if (loading) return <TabsSkeleton />;
   return (
-    <div className="flex gap-x-3 md:gap-x-4 " {...rest}>
+    <div role="tablist" className="flex gap-x-3 md:gap-x-4 " {...rest}>
       {children}
     </div>
   );

@@ -52,7 +52,7 @@ export function Dropdown<T extends string | number>(props: DropdownProps<T>) {
         align={align}
         sideOffset={8}
         className={cn(
-          "p-0 border border-[#F0F0F0] bg-white shadow-[2px_-1px_9px_rgba(229,226,226,0.25),0px_4px_9px_rgba(229,226,226,0.25)]",
+          "border border-border bg-popover p-1 text-popover-foreground shadow-float",
           matchTriggerWidth ? "w-(--radix-popover-trigger-width)" : "w-50",
           contentClassName,
         )}
@@ -61,20 +61,19 @@ export function Dropdown<T extends string | number>(props: DropdownProps<T>) {
           {options.map((option) => {
             const isActive = value === option.value;
 
-            // Hover tints with the PRIMARY ramp, matching the primary text
-            // colour the row takes — the old "#FEF4F6" was the retired
-            // pink brand, so selected and hovered rows disagreed with
-            // their own label colour.
+            // Rows highlight with the accent surface; the active one is also
+            // bolder and carries aria-current so it is not colour-only.
             const itemClass = isActive
-              ? "bg-primary/10 text-primary font-semibold"
-              : "text-[#141414] hover:bg-primary/5 hover:text-primary";
+              ? "bg-accent text-accent-foreground font-semibold"
+              : "text-popover-foreground hover:bg-accent hover:text-accent-foreground";
 
             return (
               <button
                 key={String(option.value)}
                 type="button"
                 onClick={() => handleSelect(option.value)}
-                className={`font-proxima-nova text-sm cursor-pointer px-4 py-3 text-left transition-colors ${itemClass}`}
+                aria-current={isActive ? "true" : undefined}
+                className={`cursor-pointer rounded-sm px-3 py-2.5 text-left text-sm transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 ${itemClass}`}
               >
                 {option.label}
               </button>

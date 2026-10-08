@@ -79,10 +79,8 @@ export function CalendarModal(props: TCalendarModalProps) {
 
           {selected ? (
             <div className="pb-4 text-center">
-              <p className="font-proxima-nova text-xs font-medium uppercase tracking-wide text-[#999]">
-                Selected date
-              </p>
-              <p className="font-proxima-nova text-[22px] font-bold text-[#141414]">
+              <p className="eyebrow">Selected date</p>
+              <p className="text-[22px] font-semibold tracking-[-0.04em] text-foreground">
                 {format(selected, "d MMMM yyyy")}
               </p>
             </div>
@@ -112,40 +110,40 @@ export function CalendarModal(props: TCalendarModalProps) {
             table: "w-full border-collapse",
             weekdays: "flex w-full",
             weekday:
-              "flex-1 rounded-md text-sm font-semibold text-[#141414] select-none",
+              "flex-1 rounded-md text-sm font-medium text-muted-foreground select-none",
             week: "mt-2 flex w-full",
             day: "group/day relative flex-1 aspect-square h-full p-0 text-center select-none",
             // Pushed down to sit clear of the × button and given right padding
             // so the next-month arrow never lands under it.
             nav: "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1 pr-1",
             button_previous:
-              "inline-flex items-center justify-center size-9 rounded-md p-0 select-none text-[#141414] hover:bg-[#f5f5f5] transition-colors aria-disabled:opacity-50 cursor-pointer",
+              "inline-flex size-9 cursor-pointer items-center justify-center rounded-md p-0 text-foreground transition-colors outline-none select-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-disabled:opacity-50",
             button_next:
-              "inline-flex items-center justify-center size-9 rounded-md p-0 select-none text-[#141414] hover:bg-[#f5f5f5] transition-colors aria-disabled:opacity-50 cursor-pointer",
-            caption_label: "font-semibold text-base text-[#141414] select-none",
-            // Bolder, near-black text (was the thin/washed-out default) so day
-            // numbers read clearly against the white modal. min-w-0 removes the
+              "inline-flex size-9 cursor-pointer items-center justify-center rounded-md p-0 text-foreground transition-colors outline-none select-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-disabled:opacity-50",
+            caption_label:
+              "font-semibold text-base text-foreground select-none",
+            // Foreground-coloured day numbers so they read clearly on the dark card. min-w-0 removes the
             // base min-width:--cell-size floor so a column can shrink below the
             // cell size on narrow screens instead of overflowing the modal.
             day_button:
-              "w-full min-w-0 text-[12px] sm:text-[14px] font-semibold text-[#141414] cursor-pointer",
+              "w-full min-w-0 cursor-pointer text-[12px] font-medium text-foreground sm:text-[14px]",
           }}
         />
 
         {/* Footer — Cancel + Save. 2 columns from sm up, stacked (2 rows) on
 				    small devices. */}
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-[#f0f0f0]">
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-border">
           <button
             type="button"
             onClick={handleCancel}
-            className="w-full rounded-[60px] bg-[#fafafa] px-6 py-3 font-proxima-nova font-semibold text-[16px] text-[#141414] cursor-pointer hover:bg-[#f0f0f0] transition-colors"
+            className="w-full cursor-pointer rounded-sm border border-border px-6 py-3 text-base font-medium text-foreground transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={handleSave}
-            className="w-full rounded-[60px] bg-[#ff124b] px-6 py-3 font-proxima-nova font-semibold text-[16px] text-white cursor-pointer hover:bg-[#e00040] transition-colors"
+            className="w-full cursor-pointer rounded-sm bg-primary px-6 py-3 text-base font-medium text-primary-foreground transition-colors hover:bg-primary-hover focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
           >
             Save
           </button>

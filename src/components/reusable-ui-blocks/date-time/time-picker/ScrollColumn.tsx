@@ -40,10 +40,8 @@ export function ScrollColumn<T extends string>(props: Props<T>) {
 
   return (
     <div className="flex flex-col gap-1 flex-1">
-      <span className="text-[10px] font-medium text-[#999] uppercase tracking-wide px-1 text-center">
-        {label}
-      </span>
-      <div className="h-44 overflow-y-auto rounded-lg border border-[#f0f0f0] scrollbar-thin-primary">
+      <span className="eyebrow px-1 text-center text-[10px]">{label}</span>
+      <div className="h-44 overflow-y-auto rounded-sm border border-border scrollbar-thin-primary">
         {items.map((item) => {
           const isSelected = item === selected;
           return (
@@ -51,15 +49,16 @@ export function ScrollColumn<T extends string>(props: Props<T>) {
               key={item}
               ref={isSelected ? selectedRef : undefined}
               type="button"
+              aria-pressed={isSelected}
               onClick={() => {
                 onSelect(item);
                 if (closeOnSelect && onClose) onClose();
               }}
               className={cn(
-                "w-full py-2 text-sm text-center cursor-pointer transition-colors",
+                "w-full cursor-pointer py-2 text-center text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/60",
                 isSelected
-                  ? "bg-primary text-white font-semibold"
-                  : "text-[#141414] hover:bg-[#f5f5f5]",
+                  ? "bg-primary font-semibold text-primary-foreground"
+                  : "text-popover-foreground hover:bg-accent",
               )}
             >
               {item}

@@ -5,15 +5,15 @@ import type { HeadingProps } from "./types/type";
 export const headingVariants = cva("", {
   variants: {
     as: {
-      h1: "text-3xl font-bold tracking-tight",
+      h1: "text-3xl font-semibold tracking-tight",
       h2: "text-2xl font-semibold tracking-tight",
       h3: "text-xl font-medium tracking-tight",
     },
     color: {
-      default: "text-text dark:text-text-dark",
-      muted: "text-neutral-dark dark:text-neutral-dark-dark",
-      green: "text-green-600 dark:text-green-400",
-      primary: "text-primary dark:text-primary-dark",
+      default: "text-foreground",
+      muted: "text-muted-foreground",
+      green: "text-success",
+      primary: "text-primary",
     },
     align: {
       left: "text-left",
@@ -25,7 +25,7 @@ export const headingVariants = cva("", {
       normal: "font-normal",
       medium: "font-medium",
       semibold: "font-semibold",
-      bold: "font-bold",
+      bold: "font-semibold",
     },
   },
   defaultVariants: {

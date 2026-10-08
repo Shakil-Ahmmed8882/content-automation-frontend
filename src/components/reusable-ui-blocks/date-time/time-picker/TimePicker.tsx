@@ -79,27 +79,40 @@ export function TimePicker(props: Props) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
+        aria-haspopup="dialog"
+        aria-expanded={open}
         className={cn(
-          "flex w-full items-center justify-between gap-2 px-5 py-3 rounded-[60px] border border-[#f0f0f0] bg-white",
-          "text-sm leading-6 text-left transition-colors hover:border-gray-300",
-          "focus-visible:outline-none cursor-pointer focus-visible:ring-2 focus-visible:ring-primary/50",
-          !value && "text-[#8f8f8f]",
-          open && "border-primary/40",
+          "flex h-11 w-full items-center justify-between gap-2 rounded-sm border border-input bg-transparent px-3",
+          "text-left text-sm leading-6 text-foreground transition-colors hover:bg-accent",
+          "cursor-pointer focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none",
+          !value && "text-muted-foreground",
+          open && "border-ring",
         )}
       >
         <span>{value ? formatTime(value) : resolvedPlaceholder}</span>
-        <Clock className="size-4 text-[#666] shrink-0" />
+        <Clock
+          aria-hidden="true"
+          className="size-4 shrink-0 text-muted-foreground"
+        />
       </button>
 
       {open && (
         <>
           <div
             className="fixed inset-0 z-[100]"
+            aria-hidden="true"
             onClick={() => setOpen(false)}
           />
           <div
+            role="dialog"
+            aria-label={resolvedPlaceholder}
+            onKeyDown={(event) => {
+              if (event.key !== "Escape") return;
+              event.stopPropagation();
+              setOpen(false);
+            }}
             className={cn(
-              "absolute left-0 z-[101] w-full min-w-[200px] max-w-[240px] rounded-xl border border-[#f0f0f0] bg-white shadow-lg p-3",
+              "absolute left-0 z-[101] w-full min-w-[200px] max-w-[240px] rounded-md border border-border bg-popover p-3 text-popover-foreground shadow-float",
               openDirection === "up" ? "bottom-full mb-1.5" : "top-full mt-1.5",
             )}
           >
@@ -128,7 +141,7 @@ export function TimePicker(props: Props) {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="mt-2 w-full rounded-lg bg-primary py-3 cursor-pointer text-xs font-semibold text-white hover:opacity-90 transition-opacity"
+              className="mt-2 w-full cursor-pointer rounded-sm bg-primary py-2.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary-hover focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
             >
               {t("done", "Done")}
             </button>

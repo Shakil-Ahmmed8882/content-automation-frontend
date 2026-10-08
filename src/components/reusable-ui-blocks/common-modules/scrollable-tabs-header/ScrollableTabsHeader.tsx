@@ -54,7 +54,7 @@ export function ScrollableTabsHeader(props: ScrollableTabsHeaderProps) {
       )}
     >
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-[32px] leading-[1.2] font-proxima-nova font-bold text-foreground">
+        <h1 className="text-[32px] leading-[1.2] font-semibold tracking-[-0.04em] text-foreground">
           {title}
         </h1>
         {right}

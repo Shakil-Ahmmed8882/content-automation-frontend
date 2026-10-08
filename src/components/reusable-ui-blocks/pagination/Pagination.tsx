@@ -18,13 +18,15 @@ function PaginationButton({
 }: PaginationButtonProps) {
   return (
     <button
+      type="button"
       {...props}
+      aria-current={active ? "page" : undefined}
       className={cn(
-        "size-8 rounded-full flex items-center justify-center text-xs font-proxima-nova transition-colors cursor-pointer",
-        "disabled:opacity-40 disabled:cursor-not-allowed",
+        "flex size-8 cursor-pointer items-center justify-center rounded-md text-xs transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+        "disabled:cursor-not-allowed disabled:opacity-40",
         active
-          ? "bg-primary text-white font-semibold"
-          : "text-[#292929] hover:bg-gray-100",
+          ? "bg-primary font-semibold text-primary-foreground"
+          : "text-foreground hover:bg-accent",
         className,
       )}
     >
@@ -50,8 +52,11 @@ export function Pagination({ className }: PaginationProps) {
   const pages = getPageNumbers(currentPage, last_page);
 
   return (
-    <div className={cn("flex items-center justify-between", className)}>
-      <p className="text-xs text-[#666] font-proxima-nova">
+    <nav
+      aria-label="Pagination"
+      className={cn("flex items-center justify-between gap-3", className)}
+    >
+      <p className="text-xs text-muted-foreground">
         Showing {from}–{to} of {total}
       </p>
 
@@ -68,7 +73,7 @@ export function Pagination({ className }: PaginationProps) {
           page === "..." ? (
             <span
               key={`ellipsis-${i}`}
-              className="px-1 text-xs text-[#666] select-none"
+              className="px-1 text-xs text-muted-foreground select-none"
             >
               ...
             </span>
@@ -77,6 +82,7 @@ export function Pagination({ className }: PaginationProps) {
               key={page}
               onClick={() => goToPage(page as number)}
               active={page === currentPage}
+              aria-label={`Page ${page}`}
             >
               {page}
             </PaginationButton>
@@ -91,6 +97,6 @@ export function Pagination({ className }: PaginationProps) {
           <ChevronRight size={16} />
         </PaginationButton>
       </div>
-    </div>
+    </nav>
   );
 }
