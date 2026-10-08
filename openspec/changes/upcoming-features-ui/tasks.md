@@ -8,19 +8,19 @@
 
 - [ ] 2.1 Build `FeatureCard` (BaseImage, title, short description, status badge) in dark Vercel style; verify visual match with the design system at desktop and mobile widths.
 - [ ] 2.2 Build `/upcoming-features` responsive grid rendering backend order; verify order follows `sortOrder` by changing it in the backend.
-- [ ] 2.3 Add `FeatureStatusBadge` with label/style per status and neutral fallback; verify all three statuses.
+- [x] 2.3 Add `FeatureStatusBadge` with label/style per status and neutral fallback; verify all three statuses.
 - [ ] 2.4 Add skeleton (`CardSkeletons`), empty (`NoResultFoundWrapper`) and error+retry states; verify each by throttling, emptying the table, and stopping the backend.
 
-- [ ] 2.5 Add the crown "Premium" heading badge and ensure no feature copy is hard-coded; verify cards disappear when the backend row is deleted.
+- [x] 2.5 Add the crown "Premium" heading badge and ensure no feature copy is hard-coded; verify cards disappear when the backend row is deleted.
 
 ## 3. Detail page
 
-- [ ] 3.1 Build `/upcoming-features/[slug]` (hero image, status, description with preserved line breaks, back link); verify with a seeded slug.
-- [ ] 3.2 Add not-found state for 404 and skeleton while loading; verify an unknown slug and a hidden (`isPremiumVisible=false`) slug both show it.
+- [x] 3.1 Build `/upcoming-features/[slug]` (hero image, status, description with preserved line breaks, back link); verify with a seeded slug.
+- [x] 3.2 Add not-found state for 404 and skeleton while loading; verify an unknown slug and a hidden (`isPremiumVisible=false`) slug both show it.
 
 ## 4. Premium gate & navigation
 
-- [ ] 4.1 Build `UpgradeGate` (copy + `BaseButton` to `/payment`); verify it renders for a non-premium user without calling the data endpoint.
+- [x] 4.1 Build `UpgradeGate` (copy + `BaseButton` to `/payment`); verify it renders for a non-premium user without calling the data endpoint.
 - [ ] 4.2 Handle a 403 from list/detail by showing `UpgradeGate`; verify by forcing a stale `isPremium=true` profile against a non-premium DB user.
 - [ ] 4.3 Hide the sidebar "Upcoming Features" entry unless premium (via `ShowIf`) and add the route to the route config with session guard; verify it appears after a payment success refresh without reload.
 

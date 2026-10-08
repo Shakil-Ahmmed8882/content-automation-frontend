@@ -39,6 +39,6 @@
 
 ## 7. Integration
 
-- [ ] 7.1 Run `bun run check` and `tsc --noEmit`; verify both pass.
-- [ ] 7.2 Log decisions (profile vs session query, avatar pre-checks, typed delete confirmation) in `docs/decisions.md`; verify entries exist.
+- [x] 7.1 Run `bun run check` and `tsc --noEmit`; verify both pass.
+- [x] 7.2 Log decisions (profile vs session query, avatar pre-checks, typed delete confirmation) in `docs/decisions.md`; verify entries exist.
 - [ ] 7.3 Playwriter pass of every scenario at 375px and desktop; verify each spec scenario.

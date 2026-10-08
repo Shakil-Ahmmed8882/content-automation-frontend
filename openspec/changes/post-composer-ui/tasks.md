@@ -34,5 +34,5 @@
 
 ## 6. Integration
 
-- [ ] 6.1 Check dark-theme styling per `src/design-system/vercel-design-system.md` at mobile and desktop widths; verify visually with Playwriter.
-- [ ] 6.2 Run `bun run check` and `tsc --noEmit`; verify both pass, then run compose -> preview -> save -> list -> delete end to end.
+- [x] 6.1 Check dark-theme styling per `src/design-system/vercel-design-system.md` at mobile and desktop widths; verify visually with Playwriter.
+- [x] 6.2 Run `bun run check` and `tsc --noEmit`; verify both pass, then run compose -> preview -> save -> list -> delete end to end.

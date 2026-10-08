@@ -36,5 +36,5 @@
 ## 6. Integration
 
 - [x] 6.1 Make `useConnectedPlatformKeys()` return key and status so `post-composer-ui` can decide how to treat EXPIRED; verify it is exported and typed.
-- [ ] 6.2 Check dark-theme styling against `src/design-system/vercel-design-system.md` at mobile and desktop widths; verify visually with Playwriter.
+- [x] 6.2 Check dark-theme styling against `src/design-system/vercel-design-system.md` at mobile and desktop widths; verify visually with Playwriter.
 - [ ] 6.3 Run `bun run check` and `tsc --noEmit`; verify both pass, then run connect -> select page -> disconnect end to end.

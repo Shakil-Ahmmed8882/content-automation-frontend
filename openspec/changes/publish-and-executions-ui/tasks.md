@@ -26,7 +26,7 @@
 
 - [x] 5.1 Build `/executions` list with `Pagination`, rows (title/preview, platform status chips, overall badge, times) and skeleton, empty, error states; verify with more than one page.
 - [x] 5.2 Add status filter (`tabs`) and date range filter stored in URL search params, mapped to `status`, `dateFrom`, `dateTo`; verify filters survive refresh and sort is `-createdAt`.
-- [ ] 5.3 Row click navigates to detail; add nav entry for Executions; verify navigation and the session guard.
+- [x] 5.3 Row click navigates to detail; add nav entry for Executions; verify navigation and the session guard.
 
 ## 5b. Workflow visualization (PRD sections 11 and 26)
 
@@ -44,5 +44,5 @@
 ## 6. Integration
 
 - [ ] 6.1 Verify the handoff with `post-composer-ui`: Save & publish -> post detail with pre-selected platforms -> publish -> live execution; log the contract in `docs/decisions.md`.
-- [ ] 6.2 Check dark-theme styling per `src/design-system/vercel-design-system.md` at mobile and desktop widths; verify visually with Playwriter.
-- [ ] 6.3 Run `bun run check` and `tsc --noEmit`; verify both pass, then run publish -> fail -> retry -> history end to end.
+- [x] 6.2 Check dark-theme styling per `src/design-system/vercel-design-system.md` at mobile and desktop widths; verify visually with Playwriter.
+- [x] 6.3 Run `bun run check` and `tsc --noEmit`; verify both pass, then run publish -> fail -> retry -> history end to end.
