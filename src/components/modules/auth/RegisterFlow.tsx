@@ -135,7 +135,7 @@ export default function RegisterFlow() {
           initialValues={{ email: pendingDetails.email, otp: "" }}
           onSubmit={submitCode}
         >
-          <fieldset disabled={busy} className="space-y-4">
+          <fieldset disabled={busy} className="space-y-6">
             <OtpField description="Your code expires in 5 minutes." />
           </fieldset>
           <AuthError error={error} cooldown={cooldown} />
@@ -205,7 +205,7 @@ export default function RegisterFlow() {
         initialValues={{ name: "", email: "", password: "" }}
         onSubmit={submitDetails}
       >
-        <fieldset disabled={busy} className="space-y-4">
+        <fieldset disabled={busy} className="space-y-6">
           <TextField name="name" label="Name" autoComplete="name" required />
           <TextField
             name="email"

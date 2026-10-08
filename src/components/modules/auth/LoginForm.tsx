@@ -79,7 +79,7 @@ export default function LoginForm() {
             with your own account.
           </AuthAlert>
         )}
-        <fieldset disabled={mutation.isPending} className="space-y-4">
+        <fieldset disabled={mutation.isPending} className="space-y-6">
           <TextField
             name="email"
             label="Email"
@@ -89,7 +89,7 @@ export default function LoginForm() {
           />
           <PasswordField />
         </fieldset>
-        <div className="flex justify-end">
+        <div className="-mt-3 flex justify-end">
           <Link
             href={routes.forgotPassword}
             className="text-sm text-muted-foreground hover:text-foreground hover:underline"

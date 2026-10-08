@@ -69,7 +69,7 @@ export default function ResetPasswordForm() {
         }}
         onSubmit={submit}
       >
-        <fieldset disabled={mutation.isPending} className="space-y-4">
+        <fieldset disabled={mutation.isPending} className="space-y-6">
           <TextField
             name="email"
             label="Email"

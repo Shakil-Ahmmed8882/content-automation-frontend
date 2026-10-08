@@ -47,12 +47,12 @@ export default function ForgotPasswordForm() {
       }
     >
       {sentTo ? (
-        <div className="space-y-5">
+        <div className="space-y-6">
           <AuthAlert variant="info">
             If an account exists for that email, a password reset code has been
             sent.
           </AuthAlert>
-          <Button asChild className="w-full" autoFocus>
+          <Button asChild size="xl" className="w-full" autoFocus>
             <Link
               href={`${routes.resetPassword}?${new URLSearchParams({ email: sentTo })}`}
             >
