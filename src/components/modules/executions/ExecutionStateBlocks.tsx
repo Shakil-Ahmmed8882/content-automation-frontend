@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { CenteredError } from "@/components/modules/shared/CenteredError";
 import { BaseSkeleton } from "@/components/reusable-ui-blocks/placeholder/skeletons/BaseSkeleton";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/routes/app.routes";
@@ -47,22 +48,38 @@ export function ErrorState({
   action?: ReactNode;
 }) {
   return (
-    <section className="rounded-lg border border-border bg-card p-6 shadow-card">
-      <h2 className="text-display-sm tracking-[-0.04em]">{title}</h2>
-      <p className="mt-2 text-sm text-muted-foreground">{message}</p>
-      <div className="mt-5 flex flex-wrap gap-3">
-        {retry ? (
-          <Button type="button" onClick={retry}>
-            Try again
-          </Button>
-        ) : null}
-        {action}
-      </div>
-    </section>
+    <CenteredError title={title} message={message}>
+      {retry ? (
+        <Button type="button" onClick={retry}>
+          Try again
+        </Button>
+      ) : null}
+      {action}
+    </CenteredError>
   );
 }
 
-export function EmptyExecutionsState() {
+export function EmptyExecutionsState({
+  onClearFilters,
+}: {
+  /** Pass when a status or date filter is active, so the empty state blames the filter. */
+  onClearFilters?: () => void;
+}) {
+  if (onClearFilters) {
+    return (
+      <section className="rounded-lg border border-border bg-card p-8 text-center shadow-card">
+        <h2 className="text-display-sm tracking-[-0.04em]">
+          No executions match these filters
+        </h2>
+        <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+          Try a different status or date range.
+        </p>
+        <Button type="button" className="mt-6" onClick={onClearFilters}>
+          Clear filters
+        </Button>
+      </section>
+    );
+  }
   return (
     <section className="rounded-lg border border-border bg-card p-8 text-center shadow-card">
       <h2 className="text-display-sm tracking-[-0.04em]">No executions yet</h2>

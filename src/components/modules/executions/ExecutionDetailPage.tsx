@@ -140,7 +140,7 @@ export function ExecutionDetailPage({ executionId }: { executionId: string }) {
   const showSlowNotice = isActive && activeAge > 300_000;
 
   return (
-    <div className="space-y-6" aria-labelledby="execution-title">
+    <section className="space-y-6" aria-labelledby="execution-title">
       <section className="rounded-lg border border-border bg-card p-6 shadow-card">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="min-w-0">
@@ -152,7 +152,9 @@ export function ExecutionDetailPage({ executionId }: { executionId: string }) {
               {execution.post.title || "Untitled post"}
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              Publishing started. You can leave this page.
+              {isActive
+                ? "Publishing started. You can leave this page."
+                : outcomeMessage(execution)}
             </p>
           </div>
           <div aria-live="polite">
@@ -341,6 +343,6 @@ export function ExecutionDetailPage({ executionId }: { executionId: string }) {
       >
         Back to executions
       </Link>
-    </div>
+    </section>
   );
 }

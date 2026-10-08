@@ -178,7 +178,21 @@ function ExecutionsHistoryContent() {
       ) : (
         <NoResultFoundWrapper
           data={query.data.data}
-          fallback={<EmptyExecutionsState />}
+          fallback={
+            <EmptyExecutionsState
+              onClearFilters={
+                status || dateFrom || dateTo
+                  ? () =>
+                      updateSearch({
+                        status: undefined,
+                        dateFrom: undefined,
+                        dateTo: undefined,
+                        page: "1",
+                      })
+                  : undefined
+              }
+            />
+          }
         >
           <div className="space-y-3" aria-live="polite">
             {query.data.data.map((execution) => (

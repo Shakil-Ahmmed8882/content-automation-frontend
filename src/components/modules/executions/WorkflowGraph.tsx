@@ -1,6 +1,13 @@
 "use client";
 
-import { Background, type Edge, type Node, ReactFlow } from "@xyflow/react";
+import {
+  Background,
+  type Edge,
+  type Node,
+  Position,
+  ReactFlow,
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
 import { AlertCircle, CheckCircle2, Clock3, Loader2, Play } from "lucide-react";
 import { useMemo } from "react";
 import type {
@@ -148,7 +155,7 @@ export function WorkflowGraph({ execution }: { execution: ExecutionDetail }) {
       source: "prepare",
       target: publication.id,
       animated: publication.status === "RUNNING",
-      style: { stroke: "var(--border)" },
+      style: { stroke: "var(--muted-foreground)" },
     }));
     const builtEdges: Edge[] = [
       {
@@ -156,7 +163,7 @@ export function WorkflowGraph({ execution }: { execution: ExecutionDetail }) {
         source: "start",
         target: "prepare",
         animated: execution.status === "PENDING",
-        style: { stroke: "var(--border)" },
+        style: { stroke: "var(--muted-foreground)" },
       },
       ...platformEdges,
       ...execution.publications.map((publication) => ({
@@ -164,10 +171,19 @@ export function WorkflowGraph({ execution }: { execution: ExecutionDetail }) {
         source: publication.id,
         target: "end",
         animated: publication.status === "RUNNING",
-        style: { stroke: "var(--border)" },
+        style: { stroke: "var(--muted-foreground)" },
       })),
     ];
-    return { nodes: builtNodes, edges: builtEdges };
+    // The layout runs left to right, so edges must leave from the right side
+    // of a node and enter on the left (the default handles are top/bottom).
+    const orientedNodes = builtNodes.map(
+      (node): Node => ({
+        ...node,
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left,
+      }),
+    );
+    return { nodes: orientedNodes, edges: builtEdges };
   }, [execution]);
 
   return (
@@ -189,6 +205,7 @@ export function WorkflowGraph({ execution }: { execution: ExecutionDetail }) {
           nodes={nodes}
           edges={edges}
           fitView
+          colorMode="dark"
           nodesDraggable={false}
           nodesConnectable={false}
           elementsSelectable={false}

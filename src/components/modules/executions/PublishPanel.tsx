@@ -217,7 +217,7 @@ export function PublishPanel({ postId }: { postId: string }) {
         you press Publish now.
       </p>
 
-      <fieldset className="mt-5 space-y-3">
+      <fieldset className="mt-6 space-y-3">
         <legend className="sr-only">Platforms</legend>
         {options.length === 0 ? (
           <div className="rounded-md border border-border bg-muted/40 p-4">
@@ -234,8 +234,9 @@ export function PublishPanel({ postId }: { postId: string }) {
             const message = connectionMessage(option);
             const checkboxId = `publish-${option.key}`;
             return (
-              <div
+              <label
                 key={option.key}
+                htmlFor={checkboxId}
                 className={cn(
                   "flex cursor-pointer items-start gap-3 rounded-md border border-border bg-background p-4 transition-[border-color,background-color] duration-150",
                   "focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/40",
@@ -244,6 +245,7 @@ export function PublishPanel({ postId }: { postId: string }) {
               >
                 <Checkbox
                   id={checkboxId}
+                  className="mt-0.5"
                   checked={selectedKeys.includes(option.key)}
                   disabled={disabled}
                   aria-label={`Publish to ${option.name}`}
@@ -251,8 +253,8 @@ export function PublishPanel({ postId }: { postId: string }) {
                     togglePlatform(option.key, checked === true)
                   }
                 />
-                <label htmlFor={checkboxId} className="min-w-0 flex-1">
-                  <span className="block text-sm font-medium">
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm leading-5 font-medium">
                     {option.name}
                   </span>
                   <span className="mt-1 block text-xs text-muted-foreground">
@@ -263,8 +265,8 @@ export function PublishPanel({ postId }: { postId: string }) {
                       {message}
                     </span>
                   ) : null}
-                </label>
-              </div>
+                </span>
+              </label>
             );
           })
         )}
@@ -288,7 +290,7 @@ export function PublishPanel({ postId }: { postId: string }) {
         </div>
       ) : null}
 
-      <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:items-center">
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
         <BaseButton
           type="button"
           className="bg-primary text-primary-foreground hover:bg-primary-hover active:scale-[0.96]"
