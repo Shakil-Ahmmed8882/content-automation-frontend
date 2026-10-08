@@ -19,12 +19,12 @@ export function FieldLabel(props: TFieldLabelProps) {
   if (!label) return null;
 
   return (
-    <FormLabel className={className}>
+    <FormLabel className={cn("items-start gap-0.5 leading-5", className)}>
       <span>{label}</span>
       {required ? (
         <span
           aria-hidden
-          className={cn("ml-0.5 text-destructive", requiredClassName)}
+          className={cn("ml-0.5 text-destructive-text", requiredClassName)}
         >
           *
         </span>

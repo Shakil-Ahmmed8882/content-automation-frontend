@@ -3,6 +3,7 @@
 import { type FieldValues, useFormContext } from "react-hook-form";
 
 import {
+  cn,
   FormControl,
   FormDescription,
   FormField,
@@ -72,7 +73,7 @@ export function SelectField<T extends FieldValues>(
             disabled={disabled}
           >
             <FormControl>
-              <SelectTrigger className={triggerClassName}>
+              <SelectTrigger className={cn("w-full", triggerClassName)}>
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>

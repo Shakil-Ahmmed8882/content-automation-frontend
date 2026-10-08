@@ -42,6 +42,7 @@ export function SubmitButton(props: TSubmitButtonProps) {
   return (
     <Button
       type="submit"
+      size="xl"
       disabled={busy || disabled}
       className={cn(width === "full" ? "w-full" : "w-auto", className)}
       {...buttonProps}

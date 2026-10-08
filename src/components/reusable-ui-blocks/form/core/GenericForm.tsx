@@ -107,7 +107,7 @@ export function GenericForm<TValues extends FieldValues>(
       <form
         noValidate
         onSubmit={form.handleSubmit(handleValid, onInvalid)}
-        className={cn("space-y-4", className)}
+        className={cn("space-y-6", className)}
         {...formProps}
       >
         {children}

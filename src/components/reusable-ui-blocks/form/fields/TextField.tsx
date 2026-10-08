@@ -19,13 +19,13 @@ import type { TBaseFieldProps } from "../types/form.type";
 import { FieldLabel } from "./FieldLabel";
 
 const BASE_INPUT_CLASS =
-  "h-10 w-full rounded-sm border-input bg-transparent px-3 text-base md:text-sm placeholder:text-muted-foreground focus-visible:ring-ring/50";
+  "h-11 w-full rounded-sm border-input bg-transparent px-3.5 text-base md:text-sm placeholder:text-muted-foreground focus-visible:ring-ring/50";
 const BASE_LABEL_CLASS =
-  "items-start gap-0.5 text-sm font-medium leading-6 text-foreground";
-const BASE_REQUIRED_CLASS = "ml-0 text-destructive";
+  "items-start gap-0.5 text-sm font-medium leading-5 text-foreground";
+const BASE_REQUIRED_CLASS = "ml-0 text-destructive-text";
 const BASE_MESSAGE_CLASS = "";
 const BASE_ACTION_CLASS =
-  "absolute right-0 top-1/2 size-10 -translate-y-1/2 rounded-sm text-muted-foreground hover:text-foreground";
+  "absolute right-0.5 top-1/2 size-10 -translate-y-1/2 rounded-sm text-muted-foreground hover:text-foreground";
 
 type TTextFieldProps<T extends FieldValues> = TBaseFieldProps<T> & {
   type?: "text" | "email" | "password" | "number" | "tel" | "url" | "search";

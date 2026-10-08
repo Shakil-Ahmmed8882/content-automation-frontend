@@ -16,7 +16,7 @@ import { prepareImage } from "./prepareImage";
 // Tiles are deliberately short and top-cropped (object-top): a portrait
 // photo rendered at its own ratio pushes the rest of the form off screen.
 =========================================================*/
-const TILE_CLASS = "h-28 w-full overflow-hidden rounded-xl";
+const TILE_CLASS = "h-28 w-full overflow-hidden rounded-md";
 
 /** Why each rejected file was turned away — one list per cause, so the notice
  * below the grid can state the real reason instead of a catch-all. */
@@ -189,7 +189,7 @@ export function AttachmentField(props: Props) {
           key={`${file.name}-${index}`}
           className={cn(
             TILE_CLASS,
-            "group relative border border-border-extra-light bg-surface-secondary transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg",
+            "group relative border border-border bg-muted transition-transform duration-200 hover:-translate-y-1 hover:shadow-float",
           )}
         >
           {failed.includes(index) || !urls[index] ? (
@@ -210,7 +210,7 @@ export function AttachmentField(props: Props) {
             type="button"
             onClick={() => onRemove(index)}
             aria-label={t("remove", "Remove")}
-            className="absolute top-2 right-2 flex size-6 cursor-pointer items-center justify-center rounded-full bg-secondary text-white opacity-0 shadow-sm transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+            className="absolute top-2 right-2 flex size-6 cursor-pointer items-center justify-center rounded-full border border-border bg-background text-foreground opacity-0 shadow-sm transition-opacity outline-none group-hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             <X className="size-3.5" strokeWidth={2.5} />
           </button>
@@ -222,7 +222,7 @@ export function AttachmentField(props: Props) {
         onClick={pick}
         className={cn(
           TILE_CLASS,
-          "flex cursor-pointer flex-col items-center justify-center gap-2 border border-dashed border-border-medium bg-surface-secondary/60 transition-colors hover:border-primary hover:bg-primary-subtle",
+          "flex cursor-pointer flex-col items-center justify-center gap-2 border border-dashed border-input bg-muted/40 transition-colors outline-none hover:border-ring hover:bg-accent focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
           files.length === 0 && "col-span-2",
         )}
       >
@@ -305,7 +305,7 @@ export function AttachmentField(props: Props) {
       {hasRejections && (
         <div
           role="alert"
-          className="col-span-2 flex items-start gap-2 font-proxima-nova text-sm leading-5 text-destructive"
+          className="col-span-2 flex items-start gap-2 text-sm leading-5 text-destructive-text"
         >
           <div className="flex flex-1 flex-col gap-1">
             {rejected.wrongType.length > 0 && (
@@ -336,7 +336,7 @@ export function AttachmentField(props: Props) {
           <button
             type="button"
             onClick={() => setRejected(emptyRejections())}
-            className="cursor-pointer font-semibold whitespace-nowrap underline underline-offset-2"
+            className="cursor-pointer rounded-sm font-semibold whitespace-nowrap underline underline-offset-2 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             {t("dismiss", "Dismiss")}
           </button>
