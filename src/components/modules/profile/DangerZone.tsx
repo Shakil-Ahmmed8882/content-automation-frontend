@@ -76,7 +76,7 @@ function DeleteWarningPage() {
       className="space-y-6 text-foreground"
     >
       <div className="space-y-2 text-center">
-        <div className="mx-auto grid size-12 place-items-center rounded-full bg-destructive/10 text-destructive">
+        <div className="mx-auto grid size-12 place-items-center rounded-full bg-destructive/10 text-destructive-text">
           <ShieldAlert className="size-5" aria-hidden="true" />
         </div>
         <h2 id={headingId} className="text-display-sm tracking-[-0.04em]">

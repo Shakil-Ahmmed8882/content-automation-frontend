@@ -67,7 +67,7 @@ export function IdentityCard({ profile }: { profile: UserProfile }) {
       title="Identity"
       description="Update the name and photo shown across your workspace."
     >
-      <div className="space-y-5">
+      <div className="space-y-6">
         <AvatarUploader profile={profile} />
         <GenericForm
           ref={formRef}
@@ -78,7 +78,7 @@ export function IdentityCard({ profile }: { profile: UserProfile }) {
         >
           <fieldset
             disabled={mutation.isPending}
-            className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end"
+            className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end"
           >
             <TextField name="name" label="Name" autoComplete="name" required />
             <NameSubmitButton

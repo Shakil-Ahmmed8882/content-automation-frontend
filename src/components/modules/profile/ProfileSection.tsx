@@ -19,7 +19,7 @@ export function ProfileSection({
       aria-labelledby={headingId}
       className="min-w-0 rounded-lg bg-card p-5 shadow-card sm:p-6"
     >
-      <div className="mb-5 space-y-1">
+      <div className="mb-6 space-y-1">
         <h2 id={headingId} className="text-base tracking-[-0.02em]">
           {title}
         </h2>

@@ -26,7 +26,7 @@ export function ProfileAlert({
         aria-hidden="true"
         className={cn(
           "mt-0.5 size-4 shrink-0",
-          variant === "error" && "text-destructive",
+          variant === "error" && "text-destructive-text",
           variant === "info" && "text-muted-foreground",
           variant === "success" && "text-success",
         )}

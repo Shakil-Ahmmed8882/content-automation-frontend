@@ -109,11 +109,11 @@ export function ChangePasswordCard({ profile }: { profile: UserProfile }) {
       >
         <fieldset
           disabled={mutation.isPending}
-          className="grid gap-4"
+          className="grid gap-6"
           aria-busy={mutation.isPending}
         >
           <PasswordField name="currentPassword" label="Current password" />
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2">
             <PasswordField
               name="newPassword"
               label="New password"
