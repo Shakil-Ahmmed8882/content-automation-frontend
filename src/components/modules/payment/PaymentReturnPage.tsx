@@ -106,7 +106,9 @@ function PaymentResult({
   if (payment.status === "CANCELLED") {
     return (
       <ResultShell
-        icon={<Ban className="size-6 text-muted-foreground" aria-hidden="true" />}
+        icon={
+          <Ban className="size-6 text-muted-foreground" aria-hidden="true" />
+        }
         title="Payment cancelled"
         actions={tryAgain}
       >
@@ -117,7 +119,9 @@ function PaymentResult({
   if (payment.status === "FAILED") {
     return (
       <ResultShell
-        icon={<XCircle className="size-6 text-destructive" aria-hidden="true" />}
+        icon={
+          <XCircle className="size-6 text-destructive" aria-hidden="true" />
+        }
         title="Payment failed"
         actions={tryAgain}
       >
@@ -174,7 +178,12 @@ export function PaymentReturnPage({ mode }: { mode: "success" | "failure" }) {
   if (state.phase === "unknown") {
     return (
       <ResultShell
-        icon={<SearchX className="size-6 text-muted-foreground" aria-hidden="true" />}
+        icon={
+          <SearchX
+            className="size-6 text-muted-foreground"
+            aria-hidden="true"
+          />
+        }
         title="We couldn't find a recent payment."
         actions={
           <Button asChild>
@@ -189,7 +198,9 @@ export function PaymentReturnPage({ mode }: { mode: "success" | "failure" }) {
   if (state.phase === "error") {
     return (
       <ResultShell
-        icon={<XCircle className="size-6 text-destructive" aria-hidden="true" />}
+        icon={
+          <XCircle className="size-6 text-destructive" aria-hidden="true" />
+        }
         title="We couldn't confirm your payment yet."
         actions={
           <>

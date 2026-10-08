@@ -65,10 +65,7 @@ export function UpgradePage() {
 
   return (
     <section className="space-y-6" aria-labelledby="upgrade-title">
-      <h1
-        id="upgrade-title"
-        className="text-display-lg tracking-[-0.04em]"
-      >
+      <h1 id="upgrade-title" className="text-display-lg tracking-[-0.04em]">
         Go Premium
       </h1>
       <div className="mx-auto w-full max-w-md rounded-lg border border-border bg-card p-6 shadow-card">

@@ -7,11 +7,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { usePayment } from "@/hooks/payment.hook";
 import { routes } from "@/routes";
+import { PaymentCardSkeleton, PaymentErrorState } from "./PaymentStateBlocks";
 import { PaymentStatusBadge } from "./PaymentStatusBadge";
-import {
-  PaymentCardSkeleton,
-  PaymentErrorState,
-} from "./PaymentStateBlocks";
 import {
   formatMoney,
   formatPaymentDate,
