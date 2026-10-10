@@ -37,6 +37,11 @@ async function send<T>(path: string, options: FetchOptions<"json">) {
   }
   try {
     const result = await http<ApiEnvelope<T>>(path, options);
+    // A non-JSON body (e.g. a host's "waking up" HTML page) means the API
+    // itself has not answered yet.
+    if (typeof result !== "object" || result === null) {
+      throw new ApiError(503, "The server is not ready yet.");
+    }
     if (!result.success) {
       throw new ApiError(result.statusCode, result.message, result);
     }

@@ -27,11 +27,26 @@ export class ApiError extends Error {
     }
   }
 
+  /**
+   * The backend was unreachable or not ready (network failure, timeout, or a
+   * gateway reply while it boots) — worth retrying, never a session verdict.
+   */
+  get isTransient() {
+    return (
+      this.status === 0 ||
+      this.status === 502 ||
+      this.status === 503 ||
+      this.status === 504
+    );
+  }
+
   get userMessage() {
     if (this.sessionExpired)
       return "Your session expired. Please sign in again.";
     if (this.status === 429)
       return "Too many attempts. Please try again later.";
+    if (this.isTransient && this.status !== 0)
+      return "The server is starting up or busy. Please try again in a moment.";
     if (this.status >= 500)
       return "Something went wrong on our side. Please try again.";
     if (this.status === 0)
