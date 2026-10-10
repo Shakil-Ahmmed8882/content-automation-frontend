@@ -4,6 +4,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";
 import { CenteredError } from "@/components/modules/shared/CenteredError";
 import DashboardLoading from "@/components/modules/shared/DashboardLoading";
+import { ServerWaking } from "@/components/modules/shared/ServerWaking";
 import { Button } from "@/components/ui/button";
 import { useAuthRedirect } from "@/hooks/auth.hook";
 import { useHydrated } from "@/hooks/hydrated.hook";
@@ -46,6 +47,8 @@ function SessionGuard({
       </CenteredError>
     );
   }
+  if (session.isPending && session.failureCount > 0)
+    return <ServerWaking fullPage={mode === "protected"} />;
   if (
     session.isPending ||
     (mode === "guest" && session.data) ||

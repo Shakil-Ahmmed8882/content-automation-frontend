@@ -19,7 +19,7 @@ export function MarketingAction({
   if (!hydrated || session.isPending)
     return (
       <Button size="pill" className={className} disabled>
-        Checking session...
+        {session.failureCount > 0 ? "Waking server..." : "Checking session..."}
       </Button>
     );
   if (session.isError)

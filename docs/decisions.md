@@ -594,3 +594,20 @@ backend's single-origin CORS rejected the Vercel host, leaving the session check
 sets `NEXT_PUBLIC_API_BASE_URL=/api/v1` and `API_PROXY_TARGET=<render url>`; local dev keeps the direct URL.
 **Why:** cookies become first-party to the frontend host and CORS is no longer involved. The backend
 `FRONTEND_URL` is still needed for OAuth callback redirects.
+
+## D35 - Session check rides out a sleeping backend instead of failing
+
+**Problem:** The Render free-tier backend sleeps when idle and takes about a minute to boot on the next request.
+`useSession` (`GET /auth/me`) had `retry: false` and the client times out at 30 s, so the first visit after idle
+showed "We couldn't check your session" / "Retry session" until the user woke the backend by hand.
+**Decision:** `lib/wake-retry.ts` gives the session query a retry policy that retries only transient failures
+(`ApiError.isTransient`: network/timeout = 0, 502, 503, 504) with exponential backoff capped at 8 s, for at most 90 s
+from the first failure; 401 still resolves to guest, 403/500 still surface immediately, nothing new triggers expiry.
+While retrying, `SessionGuard` shows `ServerWaking` ("Waking up the server") and `MarketingAction` says "Waking
+server...". `apiClient` maps a non-JSON body (a host's wake-up HTML page) to a 503 instead of a malformed error.
+**Why:** the `/auth/me` request itself wakes Render, and TanStack Query already de-duplicates it across every
+observer, so no separate health-check request or new `useEffect` is needed; every other query mounts behind
+`AuthGuard`, i.e. only after the backend answered. Bounded window, so a backend that never comes back ends in the
+existing error state with "Try again" (which starts a fresh window).
+**Alternative weighed:** a dedicated `/health` ping on app load. Extra request on every visit, needs another proxy
+rewrite (`/health` is outside `/api/v1`), and still would not stop the session query from failing on its own.

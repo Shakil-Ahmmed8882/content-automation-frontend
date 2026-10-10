@@ -8,23 +8,35 @@ import * as auth from "@/api/auth.api";
 import { ApiError } from "@/lib/api-error";
 import { rateLimit } from "@/lib/rate-limit";
 import { clearSessionCache, sessionQueryKey } from "@/lib/session-cache";
+import { createWakeRetry } from "@/lib/wake-retry";
 import { loginUrl, routes } from "@/routes";
 
 export { sessionQueryKey };
+
+// Shared by every useSession observer (TanStack runs one fetch for all of them).
+const sessionWake = createWakeRetry();
 
 export function useSession() {
   return useQuery({
     queryKey: sessionQueryKey,
     queryFn: async ({ signal }) => {
       try {
-        return await auth.me(signal);
+        const user = await auth.me(signal);
+        sessionWake.reset();
+        return user;
       } catch (error) {
-        if (error instanceof ApiError && error.status === 401) return null;
+        if (error instanceof ApiError && error.status === 401) {
+          sessionWake.reset();
+          return null;
+        }
         throw error;
       }
     },
     staleTime: 5 * 60_000,
-    retry: false,
+    // Only transient failures (sleeping/booting backend) are retried; a 401
+    // already resolved to guest above and 403/500 surface as errors.
+    retry: sessionWake.retry,
+    retryDelay: sessionWake.retryDelay,
     refetchOnWindowFocus: true,
   });
 }
